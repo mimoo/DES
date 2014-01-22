@@ -16,3 +16,8 @@
 *.exe
 *.out
 *.app
+
+#
+# custom ignores for DES-whitebox project
+#
+bin/*
