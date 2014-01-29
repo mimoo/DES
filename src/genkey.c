@@ -1,7 +1,8 @@
 #include <time.h>
+#include <stdbool.h>
 #include <stdlib.h>
 
-#include <genkey.h>
+#include "genkey.h"
 
 static int genkey()
 {
