@@ -31,9 +31,3 @@ void encrypt()
 		printf(BOOL_FMT(m[0].block->bit[i]));
 	}
 }
-
-int main()
-{
-	encrypt();
-	return 0;
-}
