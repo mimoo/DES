@@ -1,5 +1,6 @@
 # Variables
-EXE=des
+EXE1=des
+EXE2=genkey
 
 #Special rules and targets
 .PHONY: all build check clean help
@@ -10,11 +11,11 @@ all: build
 
 build: 
 	@cd src && $(MAKE)
-	@cp -f src/$(EXE) .
+	@cp -f src/$(EXE1) src/$(EXE2) .
 
 clean:
 	@cd src && $(MAKE) clean
-	@rm -f $(EXE)
+	@rm -f $(EXE1) $(EXE2)
 
 help :
 	@echo -e "Usage :"
