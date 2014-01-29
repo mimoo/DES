@@ -46,7 +46,7 @@ int main(int argc, char ** argv)
     {"encrypt",        no_argument, NULL, 'e'},
     {"help",           no_argument, NULL, 'h'},
     {"output",   required_argument, NULL, 'o'},
-    { NULL,      0,                 NULL,  0}
+    {NULL,                       0, NULL,   0}
   }; 
 
   while((optc = getopt_long(argc, argv, short_opts, long_opts, NULL)) != -1)
