@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "encrypt.h"
 
 #include <getopt.h> 
 
@@ -92,6 +93,9 @@ int main(int argc, char ** argv)
     fprintf(stderr, "Can't find input file\n");
     usage(EXIT_FAILURE);
   }
+
+  if(encryp)
+     encrypt(inputFile);
 
   return EXIT_SUCCESS;
 }
