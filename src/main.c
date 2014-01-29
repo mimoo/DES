@@ -4,8 +4,8 @@
 
 #include <getopt.h> 
 
-bool encrypt=false;
-bool decrypt=false;
+bool encryp=false;
+bool decryp=false;
 static FILE * outputFile;
 
 static void usage(int status)
@@ -55,11 +55,11 @@ int main(int argc, char ** argv)
     { 
 
       case 'e' : // -e or --encrypt
-        encrypt=true;
+        encryp=true;
         break;
 
       case 'd' : // -d or --decrypt
-        decrypt=true;
+        decryp=true;
         break;
 
       case 'h' : // -h or --help
