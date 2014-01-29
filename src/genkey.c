@@ -1,25 +1,40 @@
 #include <time.h>
-#include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "genkey.h"
 
-static int genkey()
+// genkey function
+static void genkey(char* key)
 {
     srand(time(NULL));
-    int rr;
-    bool key[64];
-
-    for(int ii = 0; ii < 64; ii++)
+  
+    for(int ii = 0; ii < 8; ii++)
     {
-	rr = rand();
-	key[ii] = rr;
+	key[ii] = rand() % 255;
     }
 
+    // parity bits (it's not mandatory)
+
+    // test if the expansion function works
+
+    // no ? recursive call
+}
+
+// function to print a char in binary
+void printbits(unsigned char v) {
+   for(ii = 7; ii >= 0; ii--) putchar('0' + ((v >> ii) & 1));
 }
 
 int main()
 {
-    bool truc[64] = genkey();
-    printf("%s", truc);
+    char key[8];
+
+    genkey(key);
+    for(int ii = 0; ii < 8; ii++)
+    {
+	printbits(key[ii]);
+    }
+
+    return EXIT_SUCCESS;
 }
