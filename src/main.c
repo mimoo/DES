@@ -3,22 +3,29 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-
 #include <getopt.h> 
 
 #include "DES.h"
 
+//////////////////////////////////////////////////////
+//                 GLOBAL VARIABLES                //
+////////////////////////////////////////////////////
 
+bool encrypt = true;
+bool output = false;
 
-bool encryp=false;
-bool decryp=false;
 static FILE * outputFile;
 
+//////////////////////////////////////////////////////
+//                 FUNCTIONS                       //
+////////////////////////////////////////////////////
+
+// usage 
 static void usage(int status)
 {
     if(status == EXIT_SUCCESS)
     {
-	fprintf(stdout,"Usage: des [OPTION] FILE\n"
+	fprintf(stdout,"Usage: app [OPTION] FILE\n"
 		"Encrypt or Descrypt DES.\n\n"
 		" -d, --decrypt     decrypt DES from input file\n"
 		" -e, --encrypt     encrypt DES from input file\n"
@@ -28,27 +35,23 @@ static void usage(int status)
     }
     else
     {
-	fprintf(stderr, "Try 'des --help' for more information.\n");
+	fprintf(stderr, "Try 'app --help' for more information.\n");
     }
     exit(status);
 }
 
 int main(int argc, char ** argv)
 {
-    //
-    // OPTION PARSER
-    //
+    //////////////////////////////////////////////////////
+    //                 OPTION PARSER                   //
+    ////////////////////////////////////////////////////
 
     FILE * inputFile = NULL; //inputFile
 
-    // Initialising of output file
-    outputFile = stdout;
-
-    // Parser
     int optc = 0;
 
     //short options
-    const char* short_opts = "edo:";
+    const char* short_opts = "dehk:o:";
 
     //long options 
     const struct option long_opts[] = 
@@ -65,26 +68,24 @@ int main(int argc, char ** argv)
     { 
 	switch(optc)
 	{ 
-
-	case 'e': // -e or --encrypt
-	    encryp = true;
+	case 'd': // decrypt mode
+	    encrypt = false;
 	    break;
 
-	case 'd': // -d or --decrypt
-	    decryp = true;
-	    break;
-
-	case 'h': // -h or --help
+	case 'h': // help
 	    usage(EXIT_SUCCESS);
 	    break;
 
 	case 'o': // output file
-	    outputFile=fopen(optarg, "w");
+	    outputFile = fopen(optarg, "w");
 	    if(outputFile == NULL)
 	    {
+		// weird error
+		// what about: "don't have permission to write output file"?
 		fprintf(stderr, "Can't open ouput file\n");
 		return EXIT_FAILURE;
 	    }
+	    output = true;
 	    break;
 
 	case 'k': // key
@@ -103,39 +104,66 @@ int main(int argc, char ** argv)
 	}
     }	
 
-    //Check if there is a input file and if we can open it
-    if(argv[optind]==NULL)
+    // Check if there is a input file and if we can open it
+    if(argv[optind] == NULL)
     {
-	fprintf(stderr,"Missing input file argument\n");
+	fprintf(stderr, "Missing input file argument\n");
 	usage(EXIT_FAILURE);
     }
 
-    inputFile=fopen(argv[optind],"r");
-    if(inputFile==NULL)
+    inputFile = fopen(argv[optind], "r");
+    if(inputFile == NULL)
     {
 	fprintf(stderr, "Can't find input file\n");
 	usage(EXIT_FAILURE);
     }
 
-    if(encryp) encrypt(inputFile);
+    //////////////////////////////////////////////////////
+    //                      APP                        //
+    ////////////////////////////////////////////////////
 
     //
-    // APP
-    // 
+    // 1. put the uint64_t key into a char[8]
+    //
 
-    // 1. put the uint64_t key into a 
+    // but should we do that o.O ?
+    // why not keeping uint64_t all the time?
 
+    //
     // 2. key schedule
+    //
 
+    //
     // 3. encrypt or decrypt ?
-    
+    //
+    if(encrypt)
+    {
+
+    }
+    else
+    {
+
+    }
+
+    //
     // 4. initial permutation
+    //
 
+    //
     // 5. read file and rounds
+    //
 
+    //
     // 6. final permutation
+    //
 
+    //
     // 7. output
+    //
+
+    // default output file
+    if(output = false) 
+	Outputfile = fopen("a.out", w);
 
     //
     return EXIT_SUCCESS;
