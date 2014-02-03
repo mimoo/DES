@@ -162,8 +162,8 @@ int main(int argc, char ** argv)
     //
 
     // default output file
-    if(output = false) 
-	Outputfile = fopen("a.out", w);
+    if(output == false) 
+	outputFile = fopen("a.out", "w");
 
     //
     return EXIT_SUCCESS;

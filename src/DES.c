@@ -3,6 +3,19 @@
 
 #include "DES.h"
 
+// Verify if the parity bits are okay
+void key_parity_verify(char* key)
+{
+    for(int bit = 0; bit < 7; bit++)
+    {
+	if(rand() % 2 == 1)
+	{
+	    key[ii] = key[ii] ^ (0x80 >> bit);
+	    parity_bit = parity_bit == 0 ? 1 : 0;
+	}
+    }
+
+}
 // Algorithm that expands the given key
 // into 16 different subkeys
 void key_schedule(char* key)
@@ -29,8 +42,7 @@ void printbits(unsigned char v) {
 // test only
 int main()
 {
-    char truc[8];
    
-    printbits(truc[1]);
+   
     return EXIT_SUCCESS;
 }
