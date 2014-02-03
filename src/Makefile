@@ -12,7 +12,7 @@ LDFLAGS=-lm
 
 #Rules and targets
 
-all: $(EXE1) $(EXE2)
+all: $(APP)
 
 $(APP): DES.o main.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
