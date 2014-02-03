@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// genkey function
+// generate a 64bit random DES key
+// adds parity bits (last bit of each byte)
+// check for weak keys using key_schedule of DES.c
 static void genkey(char* key)
 {
     srand(time(NULL));
@@ -40,7 +42,7 @@ void printbits(unsigned char v) {
 
 int main()
 {
-    char key[8];
+    char key[8]; // automatically initialized to 00000000000000...
 
     genkey(key);
 
