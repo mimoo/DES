@@ -1,37 +1,69 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 #include "DES.h"
 
 // Verify if the parity bits are okay
-void key_parity_verify(char* key)
+void key_parity_verify(uint64_t* key)
 {
-    for(int bit = 0; bit < 7; bit++)
-    {
-	if(rand() % 2 == 1)
-	{
-	    key[ii] = key[ii] ^ (0x80 >> bit);
-	    parity_bit = parity_bit == 0 ? 1 : 0;
-	}
-    }
-
-}
-// Algorithm that expands the given key
-// into 16 different subkeys
-void key_schedule(char* key)
-{
-    char key_temp[8];
-    int jj, kk;
+    int jj;
+    int parity_bit = 0;
 
     for(int ii = 0; ii < 64; ii++)
     {
-	jj = ii % 8;
-	kk = ii / 8; // jj is an integer => kk will be one as well
-
-	printf("%i/n", kk); // test, erase after conf
-//	key_temp[kk]
-//	DesInitial[ii];
+	jj = ii % 8; // block of 8 bits
+	
+	// test the parity bit
+	if(jj == 7)
+	{
+	    if(parity_bit == 0)
+	    {
+		// test if ii-th bit != 0
+		if( (key << ii) & 0x80000000 != (uint64_t)0)
+		    return false;
+	    }
+	    else
+	    {
+		// test if ii-th bit != 1
+		if( (key << ii) & 0x80000000 != 0x80000000)
+		    return false;
+	    }
+	    parity_bit = 0; // re-init parity_bit for next byte block
+	}
+	else
+	{
+	    if( (key << ii) & 0x80000000 == 0x80000000)
+	    {
+		parity_bit = parity_bit == 0 ? 1 : 0;
+	    }
+	}
     }
+    return true;
+}
+
+// Algorithm that expands the given key
+// into 16 different subkeys
+void key_schedule(uint64_t* key)
+{
+    uint64_t key_temp;
+
+    // test key parity bits
+    if(!key_parity_verify)
+    {
+	printf("The key you used is malformated : parity bits incorrect\n");
+	exit(EXIT_FAILURE);
+    }
+
+    // initial permutation 
+    for(int ii = 0; ii < 64; ii++)
+    {
+	//	DesInitial[ii];
+    }
+
+    // 
+
+    //
 }
 
 // function to print a char in binary
@@ -43,6 +75,6 @@ void printbits(unsigned char v) {
 int main()
 {
    
-   
+    
     return EXIT_SUCCESS;
 }

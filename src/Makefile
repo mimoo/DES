@@ -27,7 +27,7 @@ genkey: genkey.c
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 clean:
-	@rm -f *~ *.o $(APP) DES genkey
+	@rm -f *.o $(APP) DES genkey
 
 help :
 	@echo -e "Usage :"
