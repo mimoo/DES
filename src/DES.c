@@ -67,7 +67,8 @@ void key_schedule(uint64_t* key)
 }
 
 // function to print a char in binary
-void printbits(unsigned char v) {
+void printbits(unsigned char v)
+{
    for(int ii = 7; ii >= 0; ii--) putchar('0' + ((v >> ii) & 1));
 }
 

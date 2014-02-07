@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include <inttypes.h>
 #include <getopt.h> 
 
 #include "DES.h"
@@ -118,13 +119,13 @@ int main(int argc, char ** argv)
 	usage(EXIT_FAILURE);
     }
 
+    unsigned char input[8];
+
     //////////////////////////////////////////////////////
     //                      APP                        //
     ////////////////////////////////////////////////////
-
-    //
-    // 1. put the uint64_t key into a char[8]
-    //
+    
+    
 
     // but should we do that o.O ?
     // why not keeping uint64_t all the time?
@@ -145,6 +146,30 @@ int main(int argc, char ** argv)
 
     }
 
+    while(fgets(input, 8, inputFile)!=NULL)
+    {
+        fprintf(stdout,"%s\n", input);
+        int i,j;
+        uint64_t paquet=0;
+
+	for( i = 0; i <= 7; ++i )
+	{
+		paquet= paquet << 8;
+    		paquet |= (uint64_t)input[i];
+    		
+	}
+
+	for(i = 0; i < 64; i++)
+        {
+	    if( ((paquet << i) & 0x8000000000000000) == (uint64_t)0)
+	        printf("0");
+	    else
+	        printf("1");
+        }
+        printf("\n");
+
+        //On appelle ici la fonction d'encryptage
+    }
     //
     // 4. initial permutation
     //
@@ -163,7 +188,7 @@ int main(int argc, char ** argv)
 
     // default output file
     if(output == false) 
-	outputFile = fopen("a.out", "w");
+	outputFile = fopen("a.txt", "w");
 
     //
     return EXIT_SUCCESS;
