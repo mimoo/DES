@@ -13,7 +13,8 @@
 static void genkey(uint64_t* key)
 {
     srand(time(NULL));
- 
+
+    // generate key
     int parity_bit = 0;
 
     for(int ii = 0; ii < 64; ii++) 
@@ -39,8 +40,27 @@ static void genkey(uint64_t* key)
     }
 
     // test if the expansion function works
-    
+    uint64_t a_key[16];
+    a_key[0] = *key;
+    uint64_t next_key;
+
+    for(int ii=0; ii < 16; ii++)
+    {
+	key_schedule(&a_key[ii], &next_key, ii);
+	if(ii != 15)
+	    a_key[ii + 1] = next_key;
+    }
+    printf("\n");
+    for(int ii = 0; ii < 16; ii++)
+    {
+	printbits(a_key[ii]);
+	printf("\n");
+    }
+
     // no ? recursive call
+    /*
+      genkey(key)
+     */
 }
 
 int main()
