@@ -51,6 +51,8 @@ int main(int argc, char ** argv)
 
     int optc = 0;
 
+    char * key;
+
     //short options
     const char* short_opts = "dehk:o:";
 
@@ -92,7 +94,7 @@ int main(int argc, char ** argv)
 	case 'k': // key
 	    if(optarg)
 	    {
-		uint64_t u_key = optarg; // will this work?
+		key = optarg;
 	    }
 	    else
 	    {
@@ -119,14 +121,26 @@ int main(int argc, char ** argv)
 	usage(EXIT_FAILURE);
     }
 
-    unsigned char input[8];
+    
 
     //////////////////////////////////////////////////////
     //                      APP                        //
     ////////////////////////////////////////////////////
     
-    
-
+    int i;
+    uint64_t u_key;
+    for(i=0;i<64;i++)
+    {
+        u_key=u_key<<1;
+        u_key = (uint64_t)key;
+    }
+    for(i = 0; i < 64; i++)
+    {
+	if( ((u_key << i) & 0x8000000000000000) == (uint64_t)0)
+	    printf("0");
+	else
+	    printf("1");
+    }
     // but should we do that o.O ?
     // why not keeping uint64_t all the time?
 
@@ -146,30 +160,23 @@ int main(int argc, char ** argv)
 
     }
 
-    while(fgets(input, 8, inputFile)!=NULL)
+    unsigned char input[8];
+
+    while(fgets(input, 9, inputFile)!=NULL)
     {
-        fprintf(stdout,"%s\n", input);
         int i,j;
         uint64_t paquet=0;
-
 	for( i = 0; i <= 7; ++i )
 	{
 		paquet= paquet << 8;
     		paquet |= (uint64_t)input[i];
     		
 	}
-
-	for(i = 0; i < 64; i++)
-        {
-	    if( ((paquet << i) & 0x8000000000000000) == (uint64_t)0)
-	        printf("0");
-	    else
-	        printf("1");
-        }
-        printf("\n");
-
-        //On appelle ici la fonction d'encryptage
     }
+
+    //paquet est le block de 64 bits à encrypter
+
+    //On appelle ici la fonction d'encryptage
     //
     // 4. initial permutation
     //
