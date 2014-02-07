@@ -21,7 +21,7 @@ static void genkey(uint64_t* key)
 	{
 	    if(parity_bit == 1)
 	    {
-		*key += (firstbit >> ii);
+		*key += (FIRSTBIT >> ii);
 	    }
 	    parity_bit = 0; // re-init parity_bit for next byte block
 	}
@@ -29,7 +29,7 @@ static void genkey(uint64_t* key)
 	{
 	    if(rand() % 2 == 1)
 	    {
-		*key += (firstbit >> ii);
+		*key += (FIRSTBIT >> ii);
 		parity_bit = parity_bit == 0 ? 1 : 0;
 	    
 	    }
@@ -45,7 +45,7 @@ static void genkey(uint64_t* key)
 void printbits(uint64_t v) {
     for(int ii = 0; ii < 64; ii++)
     {
-	if( ((v << ii) & firstbit) == (uint64_t)0)
+	if( ((v << ii) & FIRSTBIT) == (uint64_t)0)
 	    printf("0");
 	else
 	    printf("1");
