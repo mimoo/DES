@@ -1,32 +1,38 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
+
+#include "DES.h"
 
 // generate a 64bit random DES key
 // adds parity bits (last bit of each byte)
 // check for weak keys using key_schedule of DES.c
-static void genkey(char* key)
+static void genkey(uint64_t* key)
 {
     srand(time(NULL));
+ 
     int parity_bit = 0;
 
-    // generate block by block
-    for(int ii = 0; ii < 8; ii++) 
+    for(int ii = 0; ii < 64; ii++) 
     {
-	// in each block 7 bits to generate
-	for(int bit = 0; bit < 7; bit++)
+	// parity bit
+	if(ii % 8 == 7)
+	{
+	    if(parity_bit == 1)
+	    {
+		*key += (firstbit >> ii);
+	    }
+	    parity_bit = 0; // re-init parity_bit for next byte block
+	}
+	else
 	{
 	    if(rand() % 2 == 1)
 	    {
-		key[ii] = key[ii] ^ (0x80 >> bit);
+		*key += (firstbit >> ii);
 		parity_bit = parity_bit == 0 ? 1 : 0;
+	    
 	    }
-	}
-	// 8th bit is parity bit
-	if(parity_bit == 1)
-	{
-	    key[ii] = key[ii] ^ (0x01);
-	    parity_bit = 0;
 	}
     }
 
@@ -36,20 +42,23 @@ static void genkey(char* key)
 }
 
 // function to print a char in binary
-void printbits(unsigned char v) {
-   for(int ii = 7; ii >= 0; ii--) putchar('0' + ((v >> ii) & 1));
+void printbits(uint64_t v) {
+    for(int ii = 0; ii < 64; ii++)
+    {
+	if( ((v << ii) & firstbit) == (uint64_t)0)
+	    printf("0");
+	else
+	    printf("1");
+    }
 }
 
 int main()
 {
-    char key[8]; // automatically initialized to 00000000000000...
+    uint64_t key = 0;
 
-    genkey(key);
-
-    for(int ii = 0; ii < 8; ii++)
-    {
-	printbits(key[ii]);
-    }
+    genkey(&key);
+    
+    printbits(key);
 
     return EXIT_SUCCESS;
 }
