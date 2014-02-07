@@ -91,7 +91,7 @@ int main(int argc, char ** argv)
 	case 'k': // key
 	    if(optarg)
 	    {
-		uint64_t u_key = atoi(optarg); // will this work?
+		uint64_t u_key = optarg; // will this work?
 	    }
 	    else
 	    {
