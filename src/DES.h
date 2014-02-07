@@ -13,7 +13,11 @@
 //
 
 #define FIRSTBIT 0x8000000000000000 // 1000000000...
- 
+
+//
+//             KEY SCHEDULE
+//
+
 const int PC1[56] = {
  
    57, 49, 41, 33, 25, 17,  9,
@@ -33,7 +37,7 @@ const int Rotations[16] = {
  
 };
  
-const int DesPermuted[48] = {
+const int PC2[48] = {
  
    14, 17, 11, 24,  1,  5,
     3, 28, 15,  6, 21, 10,
@@ -149,3 +153,26 @@ const int DesFinal[64] = {
     33,  1, 41,  9, 49, 17, 57, 25
  
 };
+
+//
+//  PROTOTYPES
+//
+
+// useful function to print a char in binary
+void printbits(uint64_t v);
+
+// Verify if the parity bits are okay
+bool key_parity_verify(uint64_t key);
+
+//
+//      KEY SCHEDULE
+//
+// input :
+//   * next_key : uint64_t next_key 0;
+//   * round : [[1, 16]]
+// changes :
+//   * [key] is good to be used in the XOR in the rounds
+//   * [next_key] is the combined leftkey+rightkey to be used
+//     in the key_schedule for next round
+//
+void key_schedule(uint64_t* key, uint64_t* next_key, int round);

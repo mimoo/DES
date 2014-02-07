@@ -1,4 +1,6 @@
 #include <time.h>
+
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -39,17 +41,6 @@ static void genkey(uint64_t* key)
     // test if the expansion function works
 
     // no ? recursive call
-}
-
-// function to print a char in binary
-void printbits(uint64_t v) {
-    for(int ii = 0; ii < 64; ii++)
-    {
-	if( ((v << ii) & FIRSTBIT) == (uint64_t)0)
-	    printf("0");
-	else
-	    printf("1");
-    }
 }
 
 int main()
