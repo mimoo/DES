@@ -8,27 +8,30 @@
 // Verify if the parity bits are okay
 bool key_parity_verify(uint64_t key)
 {
-    int jj;
     int parity_bit = 0;
 
     for(int ii = 0; ii < 64; ii++)
     {
-	jj = ii % 8; // block of 8 bits
-	
 	// test the parity bit
-	if(jj == 7)
+	if(ii % 8 == 7)
 	{
 	    if(parity_bit == 0)
 	    {
 		// test if ii-th bit != 0
 		if( ((key << ii) & firstbit) != (uint64_t)0)
+		{
+		    printf("parity error at bit #%i\n", ii + 1);
 		    return false;
+		}
 	    }
 	    else
 	    {
 		// test if ii-th bit != 1
 		if( ((key << ii) & firstbit) != firstbit)
+		{
+		    printf("parity error at bit #%i\n", ii + 1);
 		    return false;
+		}
 	    }
 	    parity_bit = 0; // re-init parity_bit for next byte block
 	}
@@ -82,7 +85,7 @@ void printbits(uint64_t v) {
 // test only
 int main()
 {
-    uint64_t key_test = 0b0110000010110110011001101111101000111111111010001011000110001110;
+    uint64_t key_test = 0b1110100111001111011111100111000101010110011011000010100001100011;
 
     printbits(key_test);
 
