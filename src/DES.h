@@ -12,7 +12,7 @@
 //             USEFUL DEFINES 
 //
 
-#define firstbit 0x8000000000000000 // 1000000000...
+#define FIRSTBIT 0x8000000000000000 // 1000000000...
  
 static const int DesTransform[56] = {
  
