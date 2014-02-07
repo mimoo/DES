@@ -8,7 +8,7 @@ CPPFLAGS=-I../include -DDEBUG
 LDFLAGS=-lm
 
 #Special rules and targets
-.PHONY: all clean help genkey
+.PHONY: all clean help genkey test #don't forget to remove test
 
 #Rules and targets
 
