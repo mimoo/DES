@@ -127,8 +127,17 @@ int main(int argc, char ** argv)
     
     
 
-    // but should we do that o.O ?
-    // why not keeping uint64_t all the time?
+    //
+    // 1. verify parity key
+    //
+    /*
+    // test key parity bits
+    if(!key_parity_verify(*key))
+    {
+    printf("The key you used is malformated\n");
+    exit(EXIT_FAILURE);
+    }
+    */
 
     //
     // 2. key schedule
