@@ -123,7 +123,7 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
     // PC-2 : Permuted Choice 2
     *key = 0;
 
-    for(int ii = 0; ii < 56; ii++)
+    for(int ii = 0; ii < 48; ii++)
     {
 	*key += ( (*next_key << (PC2[ii] - 1)) & FIRSTBIT) >> ii;
     }
