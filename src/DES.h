@@ -8,11 +8,11 @@
 // http://en.wikipedia.org/wiki/DES_supplementary_material#Initial_permutation_.28IP.29
 //
 
-/*****************************************************************************
-*                                                                            *
-*  Define a mapping for the key transformation.                              *
-*                                                                            *
-*****************************************************************************/
+//
+//             USEFUL DEFINES 
+//
+
+#define firstbit 0x8000000000000000 // 1000000000...
  
 static const int DesTransform[56] = {
  
@@ -27,23 +27,11 @@ static const int DesTransform[56] = {
  
 };
  
-/*****************************************************************************
-*                                                                            *
-*  Define the number of rotations for computing subkeys.                     *
-*                                                                            *
-*****************************************************************************/
- 
 static const int DesRotations[16] = {
  
    1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1
  
 };
- 
-/*****************************************************************************
-*                                                                            *
-*  Define a mapping for the permuted choice for subkeys.                     *
-*                                                                            *
-*****************************************************************************/
  
 static const int DesPermuted[48] = {
  
@@ -58,12 +46,6 @@ static const int DesPermuted[48] = {
  
 };
  
-/*****************************************************************************
-*                                                                            *
-*  Define a mapping for the initial permutation of data blocks.              *
-*                                                                            *
-*****************************************************************************/
- 
 static const int DesInitial[64] = {
  
     58, 50, 42, 34, 26, 18, 10,  2,
@@ -77,12 +59,6 @@ static const int DesInitial[64] = {
  
 };
  
-/*****************************************************************************
-*                                                                            *
-*  Define a mapping for the expansion permutation of data blocks.            *
-*                                                                            *
-*****************************************************************************/
- 
 const int DesExpansion[48] = {
     32,  1,  2,  3,  4,  5,  4,  5,
      6,  7,  8,  9,  8,  9, 10, 11,
@@ -91,12 +67,6 @@ const int DesExpansion[48] = {
     22, 23, 24, 25, 24, 25, 26, 27,
     28, 29, 28, 29, 30, 31, 32,  1
   }; 
- 
-/*****************************************************************************
-*                                                                            *
-*  Define tables for the S-box substitutions performed for data blocks.      *
-*                                                                            *
-*****************************************************************************/
  
 static const int DesSbox[8][4][16] = {
  
@@ -158,12 +128,6 @@ static const int DesSbox[8][4][16] = {
  
 };
  
-/*****************************************************************************
-*                                                                            *
-*  Define a mapping for the P-box permutation of data blocks.                *
-*                                                                            *
-*****************************************************************************/
- 
 static const int DesPbox[32] = {
  
     16,  7, 20, 21, 29, 12, 28, 17,
@@ -172,12 +136,6 @@ static const int DesPbox[32] = {
     19, 13, 30,  6, 22, 11,  4, 25
  
 };
- 
-/*****************************************************************************
-*                                                                            *
-*  Define a mapping for the final permutation of data blocks.                *
-*                                                                            *
-*****************************************************************************/
  
 static const int DesFinal[64] = {
  
