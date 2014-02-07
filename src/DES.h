@@ -14,7 +14,7 @@
 
 #define FIRSTBIT 0x8000000000000000 // 1000000000...
  
-static const int DesTransform[56] = {
+const int PC1[56] = {
  
    57, 49, 41, 33, 25, 17,  9,
     1, 58, 50, 42, 34, 26, 18,
@@ -27,13 +27,13 @@ static const int DesTransform[56] = {
  
 };
  
-static const int DesRotations[16] = {
+const int Rotations[16] = {
  
    1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1
  
 };
  
-static const int DesPermuted[48] = {
+const int DesPermuted[48] = {
  
    14, 17, 11, 24,  1,  5,
     3, 28, 15,  6, 21, 10,
@@ -46,7 +46,7 @@ static const int DesPermuted[48] = {
  
 };
  
-static const int DesInitial[64] = {
+const int DesInitial[64] = {
  
     58, 50, 42, 34, 26, 18, 10,  2,
     60, 52, 44, 36, 28, 20, 12,  4,
@@ -68,7 +68,7 @@ const int DesExpansion[48] = {
     28, 29, 28, 29, 30, 31, 32,  1
   }; 
  
-static const int DesSbox[8][4][16] = {
+const int DesSbox[8][4][16] = {
  
    {
    {14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5,  9,  0,  7},
@@ -128,7 +128,7 @@ static const int DesSbox[8][4][16] = {
  
 };
  
-static const int DesPbox[32] = {
+const int DesPbox[32] = {
  
     16,  7, 20, 21, 29, 12, 28, 17,
      1, 15, 23, 26,  5, 18, 31, 10,
@@ -137,7 +137,7 @@ static const int DesPbox[32] = {
  
 };
  
-static const int DesFinal[64] = {
+const int DesFinal[64] = {
  
     40,  8, 48, 16, 56, 24, 64, 32,
     39,  7, 47, 15, 55, 23, 63, 31,
