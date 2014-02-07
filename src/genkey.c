@@ -39,7 +39,7 @@ static void genkey(uint64_t* key)
     }
 
     // test if the expansion function works
-
+    
     // no ? recursive call
 }
 

@@ -8,6 +8,9 @@
 // http://en.wikipedia.org/wiki/DES_supplementary_material#Initial_permutation_.28IP.29
 //
 
+#ifndef DES_H
+#define DES_H
+
 //
 //             USEFUL DEFINES 
 //
@@ -176,3 +179,5 @@ bool key_parity_verify(uint64_t key);
 //     in the key_schedule for next round
 //
 void key_schedule(uint64_t* key, uint64_t* next_key, int round);
+
+#endif

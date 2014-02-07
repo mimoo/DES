@@ -127,9 +127,6 @@ int main(int argc, char ** argv)
     //                      APP                        //
     ////////////////////////////////////////////////////
     
-<<<<<<< HEAD
-    
-
     //
     // 1. verify parity key
     //
@@ -141,7 +138,7 @@ int main(int argc, char ** argv)
     exit(EXIT_FAILURE);
     }
     */
-=======
+
     int i;
     uint64_t u_key;
     for(i=0;i<64;i++)
@@ -156,9 +153,6 @@ int main(int argc, char ** argv)
 	else
 	    printf("1");
     }
-    // but should we do that o.O ?
-    // why not keeping uint64_t all the time?
->>>>>>> b5b72009242bee9deacd7f71bf9e8fa30e554e2a
 
     //
     // 2. key schedule
