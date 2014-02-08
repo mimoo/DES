@@ -27,7 +27,7 @@ void printbits(uint64_t v);
 // Verify if the parity bits are okay
 bool key_parity_verify(uint64_t key);
 
-// Key Schedule
+// Key Schedule ( http://en.wikipedia.org/wiki/File:DES-key-schedule.png )
 // input :
 //   * next_key : uint64_t next_key 0;
 //   * round : [[0, 15]]
@@ -36,5 +36,8 @@ bool key_parity_verify(uint64_t key);
 //   * [next_key] is the combined leftkey+rightkey to be used
 //     in the key_schedule for next round
 void key_schedule(uint64_t* key, uint64_t* next_key, int round);
+
+
+void rounds(uint64_t data, uint64_t key, int round);
 
 #endif

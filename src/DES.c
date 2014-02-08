@@ -211,7 +211,7 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
     uint64_t key_left_temp = 0;
     uint64_t key_right_temp = 0;
 
-    *next_key = 0;
+    *next_key = 0; // important !
 
     // 1. First round => PC-1 : Permuted Choice 1
     if(round == 0)
@@ -267,6 +267,13 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
     // All Good!
     // Use key in the DES rounds.
     // Use next_key in this function again as the new key to change
+}
+
+
+// HUGO :D ?
+void rounds(uint64_t data, uint64_t key, int round)
+{
+
 }
 
 

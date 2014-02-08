@@ -17,7 +17,7 @@ all: $(APP)
 $(APP): DES.o main.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-main.o: main.c
+main.o: main.c DES.h
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 genkey: genkey.o DES.o

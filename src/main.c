@@ -13,9 +13,8 @@
 ////////////////////////////////////////////////////
 
 bool encrypt = true;
-bool output = false;
 
-static FILE * outputFile;
+static FILE * output = NULL;
 
 //////////////////////////////////////////////////////
 //                 FUNCTIONS                       //
@@ -47,6 +46,8 @@ int main(int argc, char ** argv)
     char * c_key;
     uint64_t key = 0;
     FILE * inputFile = NULL; //inputFile
+    uint64_t data;
+    uint64_t next_key;
 
     //////////////////////////////////////////////////////
     //                 OPTION PARSER                   //
@@ -79,15 +80,14 @@ int main(int argc, char ** argv)
 	    break;
 
 	case 'o': // output file
-	    outputFile = fopen(optarg, "w");
-	    if(outputFile == NULL)
+	    output = fopen(optarg, "w");
+	    if(output == NULL)
 	    {
 		// weird error
 		// what about: "don't have permission to write output file"?
 		fprintf(stderr, "Can't open ouput file\n");
 		return EXIT_FAILURE;
 	    }
-	    output = true;
 	    break;
 
 	case 'k': // key
@@ -155,23 +155,56 @@ int main(int argc, char ** argv)
     // 3. Rounds
     //
 
-    uint64_t next_key;
-    
-    for(int ii = 0; ii < 16; ii++)
+    // read input file
+    input = fopen(inputFile, "rb");
+
+    if(!input)
     {
-	// get key for round #ii
-	key_schedule(&key, &next_key, ii);
-
-	// encrypt / decrypt
-	// round(data, key, ii);
-
-	// prepare keys for next round;
-	key = next_key;
+	printf("Error: can't open input file");
+	usage(EXIT_FAILURE);
     }
+    
+    // default output file
+    if(output == NULL) 
+	outputFile = fopen("output.txt", "w");
+
+    size_t amount;
+    uint64_t key_temp; 
+   
+    while((amount = fread(&data, 1, 8, input)) > 0)
+    {
+	// key
+	key_temp = key; // keep original key
+
+	// initial permutation
+
+	// rounds
+	for(int ii = 0; ii < 16; ii++)
+	{
+	    // get key for round #ii
+	    key_schedule(&key_temp, &next_key, ii);
+
+	    // rounds(encrypt, &data, key_temp, ii);
+
+
+
+	    // prepare keys for next round;
+	    key_temp = next_key;
+	}
+
+	// final permutation
+
+	// write output
+	fwrite(&data, 1, amount, output);
+    }
+
+    fclose(input);
+    fclose(output);
 
     //
     // Code de Jacques :D ?
     //
+    /*
     unsigned char input[8];
 
     while(fgets(input, 9, inputFile)!=NULL)
@@ -185,29 +218,9 @@ int main(int argc, char ** argv)
     		
 	}
     }
+    */
 
     //paquet est le block de 64 bits à encrypter
-
-    //On appelle ici la fonction d'encryptage
-    //
-    // 4. initial permutation
-    //
-
-    //
-    // 5. read file and rounds
-    //
-
-    //
-    // 6. final permutation
-    //
-
-    //
-    // 7. output
-    //
-
-    // default output file
-    if(output == false) 
-	outputFile = fopen("a.txt", "w");
 
     //
     return EXIT_SUCCESS;
