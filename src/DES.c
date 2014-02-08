@@ -149,17 +149,6 @@ const int DesFinal[64] = {
 //                  FUNCTIONS                      //
 ////////////////////////////////////////////////////
 
-void printbits(uint64_t v)
-{
-    for(int ii = 0; ii < 64; ii++)
-    {
-	if( ((v << ii) & FIRSTBIT) == (uint64_t)0)
-	    printf("0");
-	else
-	    printf("1");
-    }
-}
-
 bool key_parity_verify(uint64_t key)
 {
     int parity_bit = 0; // parity helper
@@ -271,7 +260,7 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
 
 
 // HUGO :D ?
-void rounds(uint64_t data, uint64_t key, int round)
+void rounds(bool encrypt, uint64_t data, uint64_t key, int round)
 {
 
 }

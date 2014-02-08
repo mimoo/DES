@@ -7,6 +7,18 @@
 
 #include "DES.h"
 
+// Function to print uint64_t in binary
+void printbits(uint64_t v)
+{
+    for(int ii = 0; ii < 64; ii++)
+    {
+	if( ((v << ii) & FIRSTBIT) == (uint64_t)0)
+	    printf("0");
+	else
+	    printf("1");
+    }
+}
+
 // generate a 64bit random DES key
 // adds parity bits (last bit of each byte)
 // check for weak keys using key_schedule of DES.c

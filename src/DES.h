@@ -21,15 +21,13 @@
 //             PROTOTYPES
 //
 
-// useful function to print a char in binary
-void printbits(uint64_t v);
-
 // Verify if the parity bits are okay
 bool key_parity_verify(uint64_t key);
 
 // Key Schedule ( http://en.wikipedia.org/wiki/File:DES-key-schedule.png )
 // input :
-//   * next_key : uint64_t next_key 0;
+//   * encrypt : false if decryption
+//   * next_key : uint64_t next_key 0
 //   * round : [[0, 15]]
 // changes :
 //   * [key] is good to be used in the XOR in the rounds
@@ -37,7 +35,6 @@ bool key_parity_verify(uint64_t key);
 //     in the key_schedule for next round
 void key_schedule(uint64_t* key, uint64_t* next_key, int round);
 
-
-void rounds(uint64_t data, uint64_t key, int round);
+void rounds(bool encrypt, uint64_t data, uint64_t key, int round);
 
 #endif
