@@ -196,6 +196,7 @@ int main(int argc, char ** argv)
 
 	// write output
 	fwrite(&data, 1, amount, output);
+	data = 0;
     }
 
     fclose(input);
