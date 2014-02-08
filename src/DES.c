@@ -162,16 +162,16 @@ void printbits(uint64_t v)
 
 bool key_parity_verify(uint64_t key)
 {
-    int parity_bit = 0;
+    int parity_bit = 0; // parity helper
 
     for(int ii = 0; ii < 64; ii++)
     {
-	// test the parity bit
+	// test the parity bit (8-th bit)
 	if(ii % 8 == 7)
 	{
 	    if(parity_bit == 0)
 	    {
-		// test if ii-th bit != 0
+		// test if 8-th bit != 0
 		if( ((key << ii) & FIRSTBIT) != (uint64_t)0)
 		{
 		    printf("parity error at bit #%i\n", ii + 1);
@@ -180,7 +180,7 @@ bool key_parity_verify(uint64_t key)
 	    }
 	    else
 	    {
-		// test if ii-th bit != 1
+		// test if 8-th bit != 1
 		if( ((key << ii) & FIRSTBIT) != FIRSTBIT)
 		{
 		    printf("parity error at bit #%i\n", ii + 1);
@@ -189,6 +189,7 @@ bool key_parity_verify(uint64_t key)
 	    }
 	    parity_bit = 0; // re-init parity_bit for next byte block
 	}
+	// count numbers of 1 in the 7bit block
 	else
 	{
 	    if( ((key << ii) & FIRSTBIT) == FIRSTBIT)
@@ -203,6 +204,7 @@ bool key_parity_verify(uint64_t key)
 
 void key_schedule(uint64_t* key, uint64_t* next_key, int round)
 {
+    // Init
     uint64_t key_left = 0;
     uint64_t key_right = 0;
 
@@ -211,6 +213,7 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
 
     *next_key = 0;
 
+    // 1. First round => PC-1 : Permuted Choice 1
     if(round == 0)
     {
 	for(int ii = 0; ii < 56; ii++)
@@ -221,7 +224,7 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
 		key_right += (((*key << (PC1[ii] - 1)) & FIRSTBIT) >> (ii % 28));
 	}
     }
-    // Other rounds? => Seperate key into two key halves.
+    // 1. Other rounds? => Seperate key into two key halves.
     else
     {
 	for(int ii = 0; ii < 56; ii++)
@@ -233,7 +236,7 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
 	}
     }
 
-    // Rotations
+    // 2. Rotations
     key_left_temp = Rotations[round] == 1 ? FIRSTBIT : 0xC000000000000000;
     key_right_temp = Rotations[round] == 1 ? FIRSTBIT : 0xC000000000000000;
 
@@ -243,7 +246,8 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
     key_left_temp += (key_left << Rotations[round]);
     key_right_temp += (key_right << Rotations[round]);
 
-    // Combine the 2 keys into 1 (also used for following rounds)
+    // Combine the 2 keys into 1 (next_key)
+    // next_key will be used for following rounds
     for(int ii = 0; ii < 56; ii++)
     {
 	if(ii < 28)
@@ -252,7 +256,7 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
 	    *next_key += (((key_right_temp << (ii % 28)) & FIRSTBIT) >> ii);
     }
 
-    // PC-2 : Permuted Choice 2
+    // 3. PC-2 : Permuted Choice 2
     *key = 0;
 
     for(int ii = 0; ii < 48; ii++)
@@ -261,6 +265,9 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
     }
 
     // All Good!
+    // Use key in the DES rounds.
+    // Use next_key in this function again as the new key to change
 }
+
 
 // End of file
