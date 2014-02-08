@@ -39,28 +39,38 @@ static void genkey(uint64_t* key)
 	}
     }
 
-    // test if the expansion function works
+    // test the key schedule
     uint64_t a_key[16];
     a_key[0] = *key;
     uint64_t next_key;
 
-    for(int ii=0; ii < 16; ii++)
+    for(int ii = 0; ii < 16; ii++)
     {
 	key_schedule(&a_key[ii], &next_key, ii);
 	if(ii != 15)
 	    a_key[ii + 1] = next_key;
     }
-    printf("\n");
+
+    // test for weak keys
+    bool weak = false;
+
     for(int ii = 0; ii < 16; ii++)
     {
-	printbits(a_key[ii]);
-	printf("\n");
+	for(int jj = 0; jj < 16; jj++)
+	{
+	    if(jj != ii)
+	    {
+		if(a_key[ii] == a_key[jj])
+		    weak = true;
+	    }
+	}
     }
 
-    // no ? recursive call
-    /*
-      genkey(key)
-     */
+    // if key is weak, do the algorithm one more time
+    if(weak)
+    {
+	genkey(key);
+    }
 }
 
 int main()
@@ -69,7 +79,9 @@ int main()
 
     genkey(&key);
     
+    printf("Here's one key for you sir: \n");
     printbits(key);
+    printf("\n");
 
     return EXIT_SUCCESS;
 }

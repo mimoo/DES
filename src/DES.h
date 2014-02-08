@@ -30,7 +30,7 @@ bool key_parity_verify(uint64_t key);
 // Key Schedule
 // input :
 //   * next_key : uint64_t next_key 0;
-//   * round : [[1, 16]]
+//   * round : [[0, 15]]
 // changes :
 //   * [key] is good to be used in the XOR in the rounds
 //   * [next_key] is the combined leftkey+rightkey to be used

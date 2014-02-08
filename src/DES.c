@@ -211,8 +211,7 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
 
     *next_key = 0;
 
-    // First Round => PC-1 : Permuted Choice 1
-    if(round == 1)
+    if(round == 0)
     {
 	for(int ii = 0; ii < 56; ii++)
 	{
@@ -221,7 +220,6 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
 	    else
 		key_right += (((*key << (PC1[ii] - 1)) & FIRSTBIT) >> (ii % 28));
 	}
-	printf("\n"); printbits(key_left); printf("\n"); printbits(key_right); printf("\n");
     }
     // Other rounds? => Seperate key into two key halves.
     else
