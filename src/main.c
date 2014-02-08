@@ -32,7 +32,7 @@ static void usage(int status)
 		" -e, --encrypt     encrypt DES from input file\n"
 		" -h, --help        display this help\n"
 		" -o, --output=FILE write result to FILE\n"
-		" -k, --key=KEY     required key to be used\n");
+		" -k, --key=KEY     required 64bits key\n");
     }
     else
     {
@@ -43,20 +43,19 @@ static void usage(int status)
 
 int main(int argc, char ** argv)
 {
+    // vars
+    char * c_key;
+    uint64_t key = 0;
+    FILE * inputFile = NULL; //inputFile
+
     //////////////////////////////////////////////////////
     //                 OPTION PARSER                   //
     ////////////////////////////////////////////////////
 
-    FILE * inputFile = NULL; //inputFile
-
     int optc = 0;
 
-    char * key;
-
-    //short options
     const char* short_opts = "dehk:o:";
 
-    //long options 
     const struct option long_opts[] = 
 	{ 
 	    {"decrypt",        no_argument, NULL, 'd'},
@@ -94,7 +93,7 @@ int main(int argc, char ** argv)
 	case 'k': // key
 	    if(optarg)
 	    {
-		key = optarg;
+		c_key = optarg;
 	    }
 	    else
 	    {
@@ -128,48 +127,51 @@ int main(int argc, char ** argv)
     ////////////////////////////////////////////////////
     
     //
-    // 1. verify parity key
-    //
-    /*
-    // test key parity bits
-    if(!key_parity_verify(*key))
-    {
-    printf("The key you used is malformated\n");
-    exit(EXIT_FAILURE);
-    }
-    */
+    // 1. Convert: (char)key -> (uint64_t)key
+    // 
 
-    int i;
-    uint64_t u_key;
-    for(i=0;i<64;i++)
+    for(int ii = 0; c_key[ii] != '\0'; ii++)
     {
-        u_key=u_key<<1;
-        u_key = (uint64_t)key;
-    }
-    for(i = 0; i < 64; i++)
-    {
-	if( ((u_key << i) & 0x8000000000000000) == (uint64_t)0)
-	    printf("0");
-	else
-	    printf("1");
+	if(ii > 63)
+	{
+	    printf("Error: key is longer than 64bits \n");
+	    exit(EXIT_FAILURE);
+	}
+	if(c_key[ii] == '1')
+	    key += (FIRSTBIT >> ii);
     }
 
     //
-    // 2. key schedule
+    // 2. Verify parity key
     //
-
-    //
-    // 3. encrypt or decrypt ?
-    //
-    if(encrypt)
+    
+    if(!key_parity_verify(key))
     {
-
+	printf("The key you used is malformated\n"); // more error msg in function
+	exit(EXIT_FAILURE);
     }
-    else
+    
+    //
+    // 3. Rounds
+    //
+
+    uint64_t next_key;
+    
+    for(int ii = 0; ii < 16; ii++)
     {
+	// get key for round #ii
+	key_schedule(&key, &next_key, ii);
 
+	// encrypt / decrypt
+	// round(data, key, ii);
+
+	// prepare keys for next round;
+	key = next_key;
     }
 
+    //
+    // Code de Jacques :D ?
+    //
     unsigned char input[8];
 
     while(fgets(input, 9, inputFile)!=NULL)
