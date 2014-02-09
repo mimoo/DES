@@ -259,12 +259,9 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
 }
 
 
-// HUGO :D ?
-void rounds(bool encrypt, uint64_t data, uint64_t key, int round)
+void rounds(bool encrypt, uint64_t *data, uint64_t key, int round)
 { 
-  int i;
-  int DesExpansion_size = 48;
-  int Permutation_size = 32;
+  int ii;
   uint64_t mask1, mask2;
   uint64_t left_block = *data;
   uint64_t right_block = *data;
@@ -279,13 +276,13 @@ void rounds(bool encrypt, uint64_t data, uint64_t key, int round)
   // 1. Block expansion
   //  
   
-  for(i = 0 ; i < DesExpansion_size ; i++)
+  for(ii = 0; ii < 48; ii++)
   {
-    mask1 = 1 << (DesExpansion[i]-1);
+    mask1 = 1 << (DesExpansion[ii]-1);
     mask1 = right_block & mask1;
     if(mask1)
     {
-      mask2 = 1 << i;
+      mask2 = 1 << ii;
       temp = temp | mask2;
     }
   }
@@ -304,43 +301,43 @@ void rounds(bool encrypt, uint64_t data, uint64_t key, int round)
   unsigned char coordy = 0;
   int block_nbr = 8;
   
-  for(i = 0 ; i < block_nbr ; i++)
+  for(ii = 0; ii < block_nbr; ii++)
   {
-    mask1 = 1 << (5 * i);
+    mask1 = 1 << (5 * ii);
     mask1 = mask1 & temp;
-    mask1 = mask1 >> (4 * i);
+    mask1 = mask1 >> (4 * ii);
     mask2 = mask2 | mask1;
-    mask1 = 1 << i;
+    mask1 = 1 << ii;
     mask1 = mask1 & temp;
-    mask1 = mask1 >> i;
+    mask1 = mask1 >> ii;
     mask2 = mask2 | mask1;
     
     coordy = mask2;
     
-    mask1 = 30 << (i * 6);
+    mask1 = 30 << (ii * 6);
     mask1 = mask1 & temp;
-    mask1 = mask1 >> (1 + (i * 6));
+    mask1 = mask1 >> (1 + (ii * 6));
     
     coordx = mask1;
     
-    temp_bis = temp_bis | (DesSbox[i][coordy][coordx] << (4 * i));
+    temp_bis = temp_bis | (DesSbox[i][coordy][coordx] << (4 * ii));
   }
   
   temp = temp_bis;
 
   //
-  // 4. Block Expansion
+  // 4. Permutation
   //
   
   temp_bis = 0;
   
-  for(i = 0 ; i < Permutation_size ; i++)
+  for(ii = 0; ii < 32; ii++)
   {
-    mask1 = 1 << (Permutation[i]-1);
+    mask1 = 1 << (Permutation[ii]-1);
     mask1 = temp & mask1;
     if(mask1)
     {
-      mask2 = 1 << i;
+      mask2 = 1 << ii;
       temp_bis = mask2 | temp_bis;
     }
   }
