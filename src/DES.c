@@ -281,23 +281,13 @@ void rounds(uint64_t *data, uint64_t key)
   //  
   
   for(int ii = 0; ii < 48; ii++)
-  {
-    mask1 = 1 << (DesExpansion[ii]-1);
-    mask1 = right_block & mask1;
-    if(mask1 != 0)
-    {
-      mask2 = 1 << ii;
-      temp = temp | mask2;
-    }
-  }
+    addbit(&temp, right_block, DesExpansion[ii]-1, ii);
 
   //
   // 2. Xor with the key
   //
   
-  temp = temp << 16;
   temp = temp ^ key;
-  temp = temp >> 16;
 
   //
   // 3. Substitution
@@ -306,12 +296,25 @@ void rounds(uint64_t *data, uint64_t key)
   unsigned char coordx = 0;
   unsigned char coordy = 0;
   int block_nbr = 8;
-  
-  mask2 = 0;
-  
+
   for(int ii = 0; ii < block_nbr; ii++)
   {
-    mask1 = 1 << (5 * ii);
+    mask1 = 0;
+    mask2 = 0;
+    
+    addbit(&mask1, temp, 6 * ii, 0);
+    addbit(&mask1, temp, 5 + 6 * ii, 1);
+    mask1 = mask1 >> 62;
+    
+    addbit(&mask2, temp, 1 + 6 * ii, 0);
+    addbit(&mask2, temp, 2 + 6 * ii, 1);
+    addbit(&mask2, temp, 3 + 6 * ii, 2);
+    addbit(&mask2, temp, 4 + 6 * ii, 3);
+    mask2 = mask2 >> 60;
+    
+    temp_bis = temp_bis | (DesSbox[ii][coordy][coordx] << (60-(4 * ii)));
+    
+    /*mask1 = 1 << (5 * ii);
     mask1 = mask1 & temp;
     mask1 = mask1 >> (4 * ii);
     mask2 = mask2 | mask1;
@@ -328,7 +331,7 @@ void rounds(uint64_t *data, uint64_t key)
     
     coordx = mask1;
     
-    temp_bis = temp_bis | (DesSbox[ii][coordy][coordx] << (4 * ii));
+    temp_bis = temp_bis | (DesSbox[ii][coordy][coordx] << (4 * ii));*/
   }
   
   temp = temp_bis;
@@ -340,15 +343,7 @@ void rounds(uint64_t *data, uint64_t key)
   temp_bis = 0;
   
   for(int ii = 0; ii < 32; ii++)
-  {
-    mask1 = 1 << (Pbox[ii] - 1);
-    mask1 = temp & mask1;
-    if(mask1 != 0)
-    {
-      mask2 = 1 << ii;
-      temp_bis = mask2 | temp_bis;
-    }
-  }
+    addbit(&temp_bis, temp, Pbox[ii]-1, ii);
   
   temp = temp_bis;
 
