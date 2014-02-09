@@ -302,7 +302,9 @@ void rounds(uint64_t *data, uint64_t key)
   // 2. Xor with the key
   //
   
-   temp = temp ^ key;
+  temp = temp << 16;
+  temp = temp ^ key;
+  temp = temp >> 16;
 
   //
   // 3. Substitution
