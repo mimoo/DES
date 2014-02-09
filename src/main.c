@@ -178,7 +178,7 @@ int main(int argc, char ** argv)
             a_key[ii + 1] = next_key;
     }
 
-    // fread
+    // read input
     size_t amount; 
 
     while((amount = fread(&data, 1, 8, input)) > 0)
@@ -186,7 +186,7 @@ int main(int argc, char ** argv)
 	// initial permutation
 	Permutation(&data, true);
 
-	// rounds
+	// encrypt rounds
         if(encrypt)
         {
             for(int ii = 0; ii < 16; ii++)
@@ -194,6 +194,7 @@ int main(int argc, char ** argv)
                 rounds(&data, a_key[ii]);
             }
         }
+	// decrypt rounds
         else
         {
             for(int ii = 15; ii >= 0; ii--)
@@ -212,27 +213,6 @@ int main(int argc, char ** argv)
 
     fclose(input);
     fclose(output);
-
-    //
-    // Code de Jacques :D ?
-    //
-    /*
-    unsigned char input[8];
-
-    while(fgets(input, 9, input)!=NULL)
-    {
-        int i,j;
-        uint64_t paquet=0;
-	for( i = 0; i <= 7; ++i )
-	{
-		paquet= paquet << 8;
-    		paquet |= (uint64_t)input[i];
-    		
-	}
-    }
-    */
-
-    //paquet est le block de 64 bits à encrypter
 
     //
     return EXIT_SUCCESS;
