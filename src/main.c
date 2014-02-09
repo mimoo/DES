@@ -184,13 +184,24 @@ int main(int argc, char ** argv)
 	// initial permutation
 	Permutation(&data, true);
 
-	// rounds
-	for(int ii = 0; ii < 16; ii++)
-	{
-	    // one round
-	    rounds(encrypt, &data, a_key[ii]);
-	}
-
+        if(encrypt)
+        {
+            // rounds
+            for(int ii = 0; ii < 16; ii++)
+            {
+                // one round  
+                rounds(&data, a_key[ii]);
+            }
+        }
+        else
+        {
+            // rounds
+            for(int ii = 15; ii >= 0; ii--)
+            {
+                // one round  
+                rounds(&data, a_key[ii]);
+            }
+        }
 	// final permutation
 	Permutation(&data, false);
 
