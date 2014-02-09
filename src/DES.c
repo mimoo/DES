@@ -273,7 +273,6 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
 
 void rounds(bool encrypt, uint64_t *data, uint64_t key)
 { 
-  int ii;
   uint64_t mask1, mask2;
   uint64_t left_block = *data;
   uint64_t right_block = *data;
@@ -288,7 +287,7 @@ void rounds(bool encrypt, uint64_t *data, uint64_t key)
   // 1. Block expansion
   //  
   
-  for(ii = 0; ii < 48; ii++)
+  for(int ii = 0; ii < 48; ii++)
   {
     mask1 = 1 << (DesExpansion[ii]-1);
     mask1 = right_block & mask1;
@@ -315,7 +314,7 @@ void rounds(bool encrypt, uint64_t *data, uint64_t key)
   
   mask2 = 0;
   
-  for(ii = 0; ii < block_nbr; ii++)
+  for(int ii = 0; ii < block_nbr; ii++)
   {
     mask1 = 1 << (5 * ii);
     mask1 = mask1 & temp;
@@ -345,7 +344,7 @@ void rounds(bool encrypt, uint64_t *data, uint64_t key)
 
   temp_bis = 0;
   
-  for(ii = 0; ii < 32; ii++)
+  for(int ii = 0; ii < 32; ii++)
   {
     mask1 = 1 << (Pbox[ii] - 1);
     mask1 = temp & mask1;
