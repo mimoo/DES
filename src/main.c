@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include <inttypes.h>
 #include <getopt.h> 
 
 #include "DES.h"
@@ -41,10 +40,10 @@ static void usage(int status)
 int main(int argc, char ** argv)
 {
     // vars
-    char * c_key;
+    char *c_key;
     uint64_t key = 0;
     bool encrypt = true;
-    FILE * inputFile = NULL; //inputFile
+    FILE * input = NULL; //inputFile
     uint64_t data;
     uint64_t next_key;
 
@@ -61,8 +60,9 @@ int main(int argc, char ** argv)
 	    {"decrypt",        no_argument, NULL, 'd'},
 	    {"encrypt",        no_argument, NULL, 'e'},
 	    {"help",           no_argument, NULL, 'h'},
-	    {"key",      required_argument, NULL, 'k'},
 	    {"output",   required_argument, NULL, 'o'},
+	    {"key",      required_argument, NULL, 'k'},
+
 	    {NULL,                       0, NULL,   0}
 	}; 
 
@@ -82,10 +82,9 @@ int main(int argc, char ** argv)
 	    output = fopen(optarg, "w");
 	    if(output == NULL)
 	    {
-		// weird error
-		// what about: "don't have permission to write output file"?
-		fprintf(stderr, "Can't open ouput file\n");
-		return EXIT_FAILURE;
+		// what about: "
+		fprintf(stderr, "Error: don't have permission to write output file");
+		exit(EXIT_FAILURE);
 	    }
 	    break;
 
@@ -103,23 +102,43 @@ int main(int argc, char ** argv)
 	default : // no arguments
 	    usage(EXIT_FAILURE); 
 	}
-    }	
+    }
+
+    //////////////////////////////////////////////////////
+    //                CHECK ARGUMENTS                  //
+    ////////////////////////////////////////////////////
+
+    // Check if key has been given as input
+    if(c_key == NULL)
+    {
+	fprintf(stderr, "Error: You are supposed to pass a key as argument");
+	usage(EXIT_FAILURE);
+    }
 
     // Check if there is a input file and if we can open it
     if(argv[optind] == NULL)
     {
-	fprintf(stderr, "Missing input file argument\n");
+	fprintf(stderr, "Error: Missing input file argument\n");
 	usage(EXIT_FAILURE);
     }
 
-    inputFile = fopen(argv[optind], "r");
-    if(inputFile == NULL)
+    input = fopen(argv[optind], "rb");
+
+    if(input == NULL)
     {
-	fprintf(stderr, "Can't find input file\n");
+	fprintf(stderr, "Error: can't open input file");
 	usage(EXIT_FAILURE);
     }
 
-    
+    // check output file
+    if(output == NULL) 
+	output = fopen("output.txt", "w");
+
+    if(output == NULL)
+    {
+	fprintf(stderr, "Error: don't have permission to write output file");
+	exit(EXIT_FAILURE);
+    }
 
     //////////////////////////////////////////////////////
     //                      APP                        //
@@ -129,14 +148,14 @@ int main(int argc, char ** argv)
     // 1. Convert: (char)key -> (uint64_t)key
     // 
 
-    for(int ii = 0; c_key[ii] != '\0'; ii++)
+    for(int ii = 0; *c_key[ii] != '\0'; ii++)
     {
 	if(ii > 63)
 	{
 	    printf("Error: key is longer than 64bits \n");
 	    exit(EXIT_FAILURE);
 	}
-	if(c_key[ii] == '1')
+	if(*c_key[ii] == '1')
 	    key += (FIRSTBIT >> ii);
     }
 
@@ -153,20 +172,7 @@ int main(int argc, char ** argv)
     //
     // 3. Rounds
     //
-
-    // read input file
-    input = fopen(inputFile, "rb");
-
-    if(!input)
-    {
-	printf("Error: can't open input file");
-	usage(EXIT_FAILURE);
-    }
-    
-    // default output file
-    if(output == NULL) 
-	outputFile = fopen("output.txt", "w");
-
+            
     size_t amount;
     uint64_t key_temp; 
    
@@ -208,7 +214,7 @@ int main(int argc, char ** argv)
     /*
     unsigned char input[8];
 
-    while(fgets(input, 9, inputFile)!=NULL)
+    while(fgets(input, 9, input)!=NULL)
     {
         int i,j;
         uint64_t paquet=0;
