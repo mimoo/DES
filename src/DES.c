@@ -261,8 +261,100 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
 
 // HUGO :D ?
 void rounds(bool encrypt, uint64_t data, uint64_t key, int round)
-{
+{ 
+  int i;
+  int DesExpansion_size = 48;
+  int Permutation_size = 32;
+  uint64_t mask1, mask2;
+  uint64_t left_block = *data;
+  uint64_t right_block = *data;
+  uint64_t temp = 0;
+  uint64_t temp_bis = 0;
+  
+  left_block  = left_block >> 32;
+  right_block = right_block << 32;
+  right_block = right_block >> 32;  
+  
+  //
+  // 1. Block expansion
+  //  
+  
+  for(i = 0 ; i < DesExpansion_size ; i++)
+  {
+    mask1 = 1 << (DesExpansion[i]-1);
+    mask1 = right_block & mask1;
+    if(mask1)
+    {
+      mask2 = 1 << i;
+      temp = temp | mask2;
+    }
+  }
 
+  //
+  // 2. Xor with the key
+  //
+  
+   temp = temp ^ key;
+
+  //
+  // 3. Substitution
+  //
+   
+  unsigned char coordx = 0;
+  unsigned char coordy = 0;
+  int block_nbr = 8;
+  
+  for(i = 0 ; i < block_nbr ; i++)
+  {
+    mask1 = 1 << (5 * i);
+    mask1 = mask1 & temp;
+    mask1 = mask1 >> (4 * i);
+    mask2 = mask2 | mask1;
+    mask1 = 1 << i;
+    mask1 = mask1 & temp;
+    mask1 = mask1 >> i;
+    mask2 = mask2 | mask1;
+    
+    coordy = mask2;
+    
+    mask1 = 30 << (i * 6);
+    mask1 = mask1 & temp;
+    mask1 = mask1 >> (1 + (i * 6));
+    
+    coordx = mask1;
+    
+    temp_bis = temp_bis | (DesSbox[i][coordy][coordx] << (4 * i));
+  }
+  
+  temp = temp_bis;
+
+  //
+  // 4. Block Expansion
+  //
+  
+  temp_bis = 0;
+  
+  for(i = 0 ; i < Permutation_size ; i++)
+  {
+    mask1 = 1 << (Permutation[i]-1);
+    mask1 = temp & mask1;
+    if(mask1)
+    {
+      mask2 = 1 << i;
+      temp_bis = mask2 | temp_bis;
+    }
+  }
+  
+  temp = temp_bis;
+
+  //
+  // 5. Xor with the left block
+  //
+
+  temp = temp ^ left_block;
+  
+  *data = *data << 32;
+  *data = *data | temp;
 }
 
 
