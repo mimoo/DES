@@ -149,22 +149,15 @@ const int DesPbox[32] = {
 //                  FUNCTIONS                      //
 ////////////////////////////////////////////////////
 
-void PermutationInitial(uint64_t* data)
+void Permutation(uint64_t* data, bool inital)
 {
     uint64_t data_temp = 0;
     for(int ii = 0; ii < 64; ii++)
     {
-	data_temp += (((*data << (PermutationInitial[ii] - 1)) & FIRSTBIT) >> ii);
-    }
-    *data = data_temp;
-}
-
-void PermutationFinal(uint64_t* data)
-{
-    uint64_t data_temp = 0;
-    for(int ii = 0; ii < 64; ii++)
-    {
-	data_temp += (((*data << (PermutationFinal[ii] - 1)) & FIRSTBIT) >> ii);
+	if(initial)
+	    data_temp += (((*data << (PermutationInitial[ii] - 1)) & FIRSTBIT) >> ii);
+	else
+	    data_temp += (((*data << (PermutationFinal[ii] - 1)) & FIRSTBIT) >> ii);
     }
     *data = data_temp;
 }
@@ -347,7 +340,7 @@ void rounds(bool encrypt, uint64_t *data, uint64_t key)
   //
   // 4. Permutation
   //
-  
+
   temp_bis = 0;
   
   for(ii = 0; ii < 32; ii++)

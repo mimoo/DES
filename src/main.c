@@ -176,7 +176,7 @@ int main(int argc, char ** argv)
 	key_temp = key; // keep original key
 
 	// initial permutation
-	PermutationInitial(&data);
+	Permutation(&data, true);
 
 	// rounds
 	for(int ii = 0; ii < 16; ii++)
@@ -192,7 +192,7 @@ int main(int argc, char ** argv)
 	}
 
 	// final permutation
-	PermutationFinal(&data);
+	Permutation(&data, false);
 
 	// write output
 	fwrite(&data, 1, amount, output);
