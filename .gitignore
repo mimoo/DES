@@ -18,6 +18,11 @@
 *.app
 
 #
-# custom ignores for DES-whitebox project
+# custom ignores for DES project
 #
-bin/*
+*.txt
+*#
+*~
+desbox
+genkey
+*.o
