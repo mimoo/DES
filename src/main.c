@@ -40,7 +40,6 @@ static void usage(int status)
 int main(int argc, char ** argv)
 {
     // vars
-    char *c_key;
     uint64_t key = 0;
     bool encrypt = true;
     FILE * input = NULL; //inputFile
@@ -91,7 +90,17 @@ int main(int argc, char ** argv)
 	case 'k': // key
 	    if(optarg)
 	    {
-		c_key = optarg;
+		// 1. Convert: (char)key -> (uint64_t)key
+		for(int ii = 0; optarg[ii] != '\0'; ii++)
+		{
+		    if(ii > 63)
+		    {
+			printf("Error: key is longer than 64bits \n");
+			exit(EXIT_FAILURE);
+		    }
+		    if(optarg[ii] == '1')
+			key += (FIRSTBIT >> ii);
+		}
 	    }
 	    else
 	    {
@@ -109,7 +118,7 @@ int main(int argc, char ** argv)
     ////////////////////////////////////////////////////
 
     // Check if key has been given as input
-    if(c_key == NULL)
+    if(key == 0)
     {
 	fprintf(stderr, "Error: You are supposed to pass a key as argument");
 	usage(EXIT_FAILURE);
@@ -143,21 +152,6 @@ int main(int argc, char ** argv)
     //////////////////////////////////////////////////////
     //                      APP                        //
     ////////////////////////////////////////////////////
-    
-    //
-    // 1. Convert: (char)key -> (uint64_t)key
-    // 
-
-    for(int ii = 0; *c_key[ii] != '\0'; ii++)
-    {
-	if(ii > 63)
-	{
-	    printf("Error: key is longer than 64bits \n");
-	    exit(EXIT_FAILURE);
-	}
-	if(*c_key[ii] == '1')
-	    key += (FIRSTBIT >> ii);
-    }
 
     //
     // 2. Verify parity key
