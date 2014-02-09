@@ -173,19 +173,6 @@ int main(int argc, char ** argv)
     // 3. Rounds
     //
 
-    // read input file
-    input = fopen(inputFile, "rb");
-
-    if(!input)
-    {
-	printf("Error: can't open input file");
-	usage(EXIT_FAILURE);
-    }
-    
-    // default output file
-    if(output == NULL) 
-	outputFile = fopen("output.txt", "w");
-
     // get keys
     uint64_t a_key[16];
     a_key[0] = key;
