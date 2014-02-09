@@ -167,28 +167,28 @@ int main(int argc, char ** argv)
     if(output == NULL) 
 	outputFile = fopen("output.txt", "w");
 
-    size_t amount;
-    uint64_t key_temp; 
-   
+    size_t amount; 
+    
+    uint64_t a_key[16];
+    a_key[0] = *key;
+
+    for(int ii = 0; ii < 16; ii++)
+    {
+        key_schedule(&a_key[ii], &next_key, ii);
+        if(ii != 15)
+            a_key[ii + 1] = next_key;
+    }
+    
     while((amount = fread(&data, 1, 8, input)) > 0)
     {
-	// key
-	key_temp = key; // keep original key
-
 	// initial permutation
 	Permutation(&data, true);
 
 	// rounds
 	for(int ii = 0; ii < 16; ii++)
 	{
-	    // get key for round #ii
-	    key_schedule(&key_temp, &next_key, ii);
-
 	    // one round
-	    rounds(encrypt, &data, key_temp);
-
-	    // prepare keys for next round;
-	    key_temp = next_key;
+	    rounds(encrypt, &data, a_key[ii]);
 	}
 
 	// final permutation
