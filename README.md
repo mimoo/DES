@@ -18,19 +18,17 @@ Author
 Files
 ----
 
-**DES.c** and **DES.h** contain the functions used in the DES algorithm.
+* **DES.c** and **DES.h** contain the functions used in the DES algorithm.
 
-**main.c** builds the algorithm and allows you to encrypt/decrypt an input file.
+* **main.c** builds the algorithm and allows you to encrypt/decrypt an input file.
 
 use make to build desbox.
 
     $ make
     
     $ desbox --help
-    
-for more info
 
-**genkey.c** is a key generator that prevents weak keys. Use it if you don't have any key to use.
+* **genkey.c** is a key generator that prevents weak keys. Use it if you don't have any key to use.
 Use make to build it and launch it without arguments.
 
     $ make genkey
