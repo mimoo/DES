@@ -29,7 +29,8 @@ use make to build desbox.
     $ desbox --help
 
 * **genkey.c** is a key generator that prevents weak keys. Use it if you don't have any key to use.
-Use make to build it and launch it without arguments.
+
+use make to build the keygen
 
     $ make genkey
 
