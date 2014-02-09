@@ -12,8 +12,6 @@
 //                 GLOBAL VARIABLES                //
 ////////////////////////////////////////////////////
 
-bool encrypt = true;
-
 static FILE * output = NULL;
 
 //////////////////////////////////////////////////////
@@ -45,6 +43,7 @@ int main(int argc, char ** argv)
     // vars
     char * c_key;
     uint64_t key = 0;
+    bool encrypt = true;
     FILE * inputFile = NULL; //inputFile
     uint64_t data;
     uint64_t next_key;
@@ -177,7 +176,7 @@ int main(int argc, char ** argv)
 	key_temp = key; // keep original key
 
 	// initial permutation
-
+	
 	// rounds
 	for(int ii = 0; ii < 16; ii++)
 	{
