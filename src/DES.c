@@ -135,6 +135,13 @@ const int Pbox[32] = {
 //                  FUNCTIONS                      //
 ////////////////////////////////////////////////////
 
+void addbit(uint64_t *block, uint64_t from,
+		   int position_from, int position_to)
+{
+    if(((from << (position_from)) & FIRSTBIT) != 0)
+	*block += (FIRSTBIT >> position_to);
+}
+
 void Permutation(uint64_t* data, bool initial)
 {
     uint64_t data_temp = 0;
@@ -207,9 +214,9 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
 	for(int ii = 0; ii < 56; ii++)
 	{
 	    if(ii < 28)
-		key_left += (((*key << (PC1[ii] - 1)) & FIRSTBIT) >> ii);
+		addbit(&key_left, *key, PC1[ii] - 1, ii);
 	    else
-		key_right += (((*key << (PC1[ii] - 1)) & FIRSTBIT) >> (ii % 28));
+		addbit(&key_right, *key, PC1[ii] - 1, ii % 28);
 	}
     }
     // 1. Other rounds? => Seperate key into two key halves.
@@ -218,9 +225,9 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
 	for(int ii = 0; ii < 56; ii++)
 	{
 	    if(ii < 28)
-		key_left += (((*key << ii) & FIRSTBIT) >> ii);
+		addbit(&key_left, *key, ii, ii);
 	    else
-		key_right += (((*key << ii) & FIRSTBIT) >> (ii % 28));
+		addbit(&key_right, *key, ii, ii);
 	}
     }
 
@@ -239,9 +246,9 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
     for(int ii = 0; ii < 56; ii++)
     {
 	if(ii < 28)
-	    *next_key += (((key_left_temp << ii) & FIRSTBIT) >> ii);
+	    addbit(next_key, key_left_temp, ii, ii);
 	else
-	    *next_key += (((key_right_temp << (ii % 28)) & FIRSTBIT) >> ii);
+	    addbit(next_key, key_right_temp, (ii % 28), ii);
     }
 
     // 3. PC-2 : Permuted Choice 2
@@ -249,7 +256,7 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
 
     for(int ii = 0; ii < 48; ii++)
     {
-	*key += ( (*next_key << (PC2[ii] - 1)) & FIRSTBIT) >> ii;
+	addbit(key, *next_key, PC2[ii] - 1, ii);
     }
 
     // All Good!

@@ -21,6 +21,12 @@
 //             PROTOTYPES
 //
 
+// addbit helper
+// takes the bit number "position_from" from "from"
+// adds it to "block" in position "position_to"
+void addbit(uint64_t *block, uint64_t from,
+	    int position_from, int position_to);
+
 // Initial and Final Permutations
 void Permutation(uint64_t* data, bool initial);
 

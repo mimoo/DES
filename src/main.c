@@ -22,17 +22,17 @@ static void usage(int status)
 {
     if(status == EXIT_SUCCESS)
     {
-	fprintf(stdout,"Usage: app [OPTION] FILE\n"
-		"Encrypt or Descrypt DES.\n\n"
+	fprintf(stdout,"Usage: desbox [OPTION] -k=KEY FILE\n"
+		"Encrypt or Descrypt with DES.\n\n"
+		" -k, --key=KEY     required 64bits key\n"
 		" -d, --decrypt     decrypt DES from input file\n"
 		" -e, --encrypt     encrypt DES from input file\n"
-		" -h, --help        display this help\n"
 		" -o, --output=FILE write result to FILE\n"
-		" -k, --key=KEY     required 64bits key\n");
+		" -h, --help        display this help\n");
     }
     else
     {
-	fprintf(stderr, "Try 'app --help' for more information.\n");
+	fprintf(stderr, "Try 'desbox --help' for more information.\n");
     }
     exit(status);
 }
@@ -120,7 +120,7 @@ int main(int argc, char ** argv)
     // Check if key has been given as input
     if(key == 0)
     {
-	fprintf(stderr, "Error: You are supposed to pass a key as argument");
+	fprintf(stderr, "Error: You are supposed to pass a key as argument\n");
 	usage(EXIT_FAILURE);
     }
 
@@ -135,7 +135,7 @@ int main(int argc, char ** argv)
 
     if(input == NULL)
     {
-	fprintf(stderr, "Error: can't open input file");
+	fprintf(stderr, "Error: can't open input file\n");
 	usage(EXIT_FAILURE);
     }
 
@@ -145,7 +145,7 @@ int main(int argc, char ** argv)
 
     if(output == NULL)
     {
-	fprintf(stderr, "Error: don't have permission to write output file");
+	fprintf(stderr, "Error: don't have permission to write output file\n");
 	exit(EXIT_FAILURE);
     }
 
