@@ -292,7 +292,7 @@ void rounds(bool encrypt, uint64_t *data, uint64_t key)
   {
     mask1 = 1 << (DesExpansion[ii]-1);
     mask1 = right_block & mask1;
-    if(mask1)
+    if(mask1 != 0)
     {
       mask2 = 1 << ii;
       temp = temp | mask2;
@@ -312,6 +312,8 @@ void rounds(bool encrypt, uint64_t *data, uint64_t key)
   unsigned char coordx = 0;
   unsigned char coordy = 0;
   int block_nbr = 8;
+  
+  mask2 = 0;
   
   for(ii = 0; ii < block_nbr; ii++)
   {
@@ -347,7 +349,7 @@ void rounds(bool encrypt, uint64_t *data, uint64_t key)
   {
     mask1 = 1 << (Pbox[ii] - 1);
     mask1 = temp & mask1;
-    if(mask1)
+    if(mask1 != 0)
     {
       mask2 = 1 << ii;
       temp_bis = mask2 | temp_bis;
