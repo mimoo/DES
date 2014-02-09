@@ -271,7 +271,7 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
     // Use next_key in this function again as the new key to change
 }
 
-void rounds(bool encrypt, uint64_t *data, uint64_t key)
+void rounds(uint64_t *data, uint64_t key)
 { 
   uint64_t mask1, mask2;
   uint64_t left_block = *data;
