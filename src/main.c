@@ -172,30 +172,54 @@ int main(int argc, char ** argv)
     //
     // 3. Rounds
     //
-            
-    size_t amount;
-    uint64_t key_temp; 
-   
+
+    // read input file
+    input = fopen(inputFile, "rb");
+
+    if(!input)
+    {
+	printf("Error: can't open input file");
+	usage(EXIT_FAILURE);
+    }
+    
+    // default output file
+    if(output == NULL) 
+	outputFile = fopen("output.txt", "w");
+
+    // get keys
+    uint64_t a_key[16];
+    a_key[0] = key;
+
+    for(int ii = 0; ii < 16; ii++)
+    {
+        key_schedule(&a_key[ii], &next_key, ii);
+        if(ii != 15)
+            a_key[ii + 1] = next_key;
+    }
+
+    // fread
+    size_t amount; 
+
     while((amount = fread(&data, 1, 8, input)) > 0)
     {
-	// key
-	key_temp = key; // keep original key
-
 	// initial permutation
 	Permutation(&data, true);
 
 	// rounds
-	for(int ii = 0; ii < 16; ii++)
-	{
-	    // get key for round #ii
-	    key_schedule(&key_temp, &next_key, ii);
-
-	    // one round
-	    rounds(encrypt, &data, key_temp);
-
-	    // prepare keys for next round;
-	    key_temp = next_key;
-	}
+        if(encrypt)
+        {
+            for(int ii = 0; ii < 16; ii++)
+            {
+                rounds(&data, a_key[ii]);
+            }
+        }
+        else
+        {
+            for(int ii = 15; ii >= 0; ii--)
+            {
+                rounds(&data, a_key[ii]);
+            }
+        }
 
 	// final permutation
 	Permutation(&data, false);

@@ -271,9 +271,8 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
     // Use next_key in this function again as the new key to change
 }
 
-void rounds(bool encrypt, uint64_t *data, uint64_t key)
+void rounds(uint64_t *data, uint64_t key)
 { 
-  int ii;
   uint64_t mask1, mask2;
   uint64_t left_block = *data;
   uint64_t right_block = *data;
@@ -288,11 +287,11 @@ void rounds(bool encrypt, uint64_t *data, uint64_t key)
   // 1. Block expansion
   //  
   
-  for(ii = 0; ii < 48; ii++)
+  for(int ii = 0; ii < 48; ii++)
   {
     mask1 = 1 << (DesExpansion[ii]-1);
     mask1 = right_block & mask1;
-    if(mask1)
+    if(mask1 != 0)
     {
       mask2 = 1 << ii;
       temp = temp | mask2;
@@ -303,7 +302,9 @@ void rounds(bool encrypt, uint64_t *data, uint64_t key)
   // 2. Xor with the key
   //
   
-   temp = temp ^ key;
+  temp = temp << 16;
+  temp = temp ^ key;
+  temp = temp >> 16;
 
   //
   // 3. Substitution
@@ -313,7 +314,9 @@ void rounds(bool encrypt, uint64_t *data, uint64_t key)
   unsigned char coordy = 0;
   int block_nbr = 8;
   
-  for(ii = 0; ii < block_nbr; ii++)
+  mask2 = 0;
+  
+  for(int ii = 0; ii < block_nbr; ii++)
   {
     mask1 = 1 << (5 * ii);
     mask1 = mask1 & temp;
@@ -343,11 +346,11 @@ void rounds(bool encrypt, uint64_t *data, uint64_t key)
 
   temp_bis = 0;
   
-  for(ii = 0; ii < 32; ii++)
+  for(int ii = 0; ii < 32; ii++)
   {
     mask1 = 1 << (Pbox[ii] - 1);
     mask1 = temp & mask1;
-    if(mask1)
+    if(mask1 != 0)
     {
       mask2 = 1 << ii;
       temp_bis = mask2 | temp_bis;
