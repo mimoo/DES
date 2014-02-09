@@ -148,9 +148,9 @@ void Permutation(uint64_t* data, bool initial)
     for(int ii = 0; ii < 64; ii++)
     {
 	if(initial)
-	    data_temp += (((*data << (PermutationInitial[ii] - 1)) & FIRSTBIT) >> ii);
+	    addbit(&data_temp, *data, PermutationInitial[ii] - 1, ii);
 	else
-	    data_temp += (((*data << (PermutationFinal[ii] - 1)) & FIRSTBIT) >> ii);
+	    addbit(&data_temp, *data, PermutationFinal[ii] - 1, ii);
     }
     *data = data_temp;
 }
