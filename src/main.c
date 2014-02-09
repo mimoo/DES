@@ -176,22 +176,23 @@ int main(int argc, char ** argv)
 	key_temp = key; // keep original key
 
 	// initial permutation
-	
+	PermutationInitial(&data);
+
 	// rounds
 	for(int ii = 0; ii < 16; ii++)
 	{
 	    // get key for round #ii
 	    key_schedule(&key_temp, &next_key, ii);
 
-	    // rounds(encrypt, &data, key_temp, ii);
-
-
+	    // one round
+	    rounds(encrypt, &data, key_temp);
 
 	    // prepare keys for next round;
 	    key_temp = next_key;
 	}
 
 	// final permutation
+	PermutationFinal(&data);
 
 	// write output
 	fwrite(&data, 1, amount, output);

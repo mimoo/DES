@@ -9,6 +9,7 @@
 //                 GLOBAL VARIABLES                //
 ////////////////////////////////////////////////////
 
+// Key schedule tables
 const int PC1[56] = {
  
    57, 49, 41, 33, 25, 17,  9,
@@ -21,13 +22,11 @@ const int PC1[56] = {
    21, 13,  5, 28, 20, 12,  4
  
 };
- 
 const int Rotations[16] = {
  
    1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1
  
 };
- 
 const int PC2[48] = {
  
    14, 17, 11, 24,  1,  5,
@@ -40,8 +39,9 @@ const int PC2[48] = {
    46, 42, 50, 36, 29, 32
  
 };
- 
-const int DesInitial[64] = {
+
+// Permutations 
+const int PermutationInitial[64] = {
  
     58, 50, 42, 34, 26, 18, 10,  2,
     60, 52, 44, 36, 28, 20, 12,  4,
@@ -53,7 +53,20 @@ const int DesInitial[64] = {
     63, 55, 47, 39, 31, 23, 15,  7
  
 };
+const int PermutationFinal[64] = {
  
+    40,  8, 48, 16, 56, 24, 64, 32,
+    39,  7, 47, 15, 55, 23, 63, 31,
+    38,  6, 46, 14, 54, 22, 62, 30,
+    37,  5, 45, 13, 53, 21, 61, 29,
+    36,  4, 44, 12, 52, 20, 60, 28,
+    35,  3, 43, 11, 51, 19, 59, 27,
+    34,  2, 42, 10, 50, 18, 58, 26,
+    33,  1, 41,  9, 49, 17, 57, 25
+ 
+};
+
+// Rounds
 const int DesExpansion[48] = {
     32,  1,  2,  3,  4,  5,  4,  5,
      6,  7,  8,  9,  8,  9, 10, 11,
@@ -131,23 +144,30 @@ const int DesPbox[32] = {
     19, 13, 30,  6, 22, 11,  4, 25
  
 };
- 
-const int DesFinal[64] = {
- 
-    40,  8, 48, 16, 56, 24, 64, 32,
-    39,  7, 47, 15, 55, 23, 63, 31,
-    38,  6, 46, 14, 54, 22, 62, 30,
-    37,  5, 45, 13, 53, 21, 61, 29,
-    36,  4, 44, 12, 52, 20, 60, 28,
-    35,  3, 43, 11, 51, 19, 59, 27,
-    34,  2, 42, 10, 50, 18, 58, 26,
-    33,  1, 41,  9, 49, 17, 57, 25
- 
-};
 
 //////////////////////////////////////////////////////
 //                  FUNCTIONS                      //
 ////////////////////////////////////////////////////
+
+void PermutationInitial(uint64_t* data)
+{
+    uint64_t data_temp = 0;
+    for(int ii = 0; ii < 64; ii++)
+    {
+	data_temp += (((*data << (PermutationInitial[ii] - 1)) & FIRSTBIT) >> ii);
+    }
+    *data = data_temp;
+}
+
+void PermutationFinal(uint64_t* data)
+{
+    uint64_t data_temp = 0;
+    for(int ii = 0; ii < 64; ii++)
+    {
+	data_temp += (((*data << (PermutationFinal[ii] - 1)) & FIRSTBIT) >> ii);
+    }
+    *data = data_temp;
+}
 
 bool key_parity_verify(uint64_t key)
 {
@@ -258,8 +278,6 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
     // Use next_key in this function again as the new key to change
 }
 
-
-// HUGO :D ?
 void rounds(bool encrypt, uint64_t data, uint64_t key, int round)
 { 
   int i;
@@ -329,7 +347,7 @@ void rounds(bool encrypt, uint64_t data, uint64_t key, int round)
   temp = temp_bis;
 
   //
-  // 4. Block Expansion
+  // 4. Block expansion
   //
   
   temp_bis = 0;

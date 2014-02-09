@@ -21,6 +21,12 @@
 //             PROTOTYPES
 //
 
+// Initial Permutation
+void PermutationInitial(uint64_t* data);
+
+// Final Permutation
+void PermutationFinal(uint64_t* data);
+
 // Verify if the parity bits are okay
 bool key_parity_verify(uint64_t key);
 
