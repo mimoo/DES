@@ -136,7 +136,7 @@ const int DesSbox[8][4][16] = {
  
 };
  
-const int DesPbox[32] = {
+const int Pbox[32] = {
  
     16,  7, 20, 21, 29, 12, 28, 17,
      1, 15, 23, 26,  5, 18, 31, 10,
@@ -149,7 +149,7 @@ const int DesPbox[32] = {
 //                  FUNCTIONS                      //
 ////////////////////////////////////////////////////
 
-void Permutation(uint64_t* data, bool inital)
+void Permutation(uint64_t* data, bool initial)
 {
     uint64_t data_temp = 0;
     for(int ii = 0; ii < 64; ii++)
@@ -332,7 +332,7 @@ void rounds(bool encrypt, uint64_t *data, uint64_t key)
     
     coordx = mask1;
     
-    temp_bis = temp_bis | (DesSbox[i][coordy][coordx] << (4 * ii));
+    temp_bis = temp_bis | (DesSbox[ii][coordy][coordx] << (4 * ii));
   }
   
   temp = temp_bis;
@@ -345,7 +345,7 @@ void rounds(bool encrypt, uint64_t *data, uint64_t key)
   
   for(ii = 0; ii < 32; ii++)
   {
-    mask1 = 1 << (Permutation[ii]-1);
+    mask1 = 1 << (Pbox[ii] - 1);
     mask1 = temp & mask1;
     if(mask1)
     {
