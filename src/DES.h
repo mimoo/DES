@@ -41,6 +41,6 @@ bool key_parity_verify(uint64_t key);
 //     in the key_schedule for next round
 void key_schedule(uint64_t* key, uint64_t* next_key, int round);
 
-void rounds(bool encrypt, uint64_t data, uint64_t key, int round);
+void rounds(bool encrypt, uint64_t *data, uint64_t key);
 
 #endif
