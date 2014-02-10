@@ -260,86 +260,62 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
     }
 
     // All Good!
-    // Use key in the DES rounds.
+    //pn Use key in the DES rounds.
     // Use next_key in this function again as the new key to change
 }
 
 void rounds(uint64_t *data, uint64_t key)
 { 
-  uint64_t mask1, mask2;
-  uint64_t left_block = *data;
-  uint64_t right_block = *data;
-  uint64_t temp = 0;
-  uint64_t temp_bis = 0;
+    uint64_t right_block = 0;
+    uint64_t right_block_temp = 0;
   
-  // Split the blocks
-  left_block  = left_block >> 32;
-  left_block  = left_block << 32;
-  right_block = right_block << 32; 
-  
-  //
   // 1. Block expansion
-  //  
-  
   for(int ii = 0; ii < 48; ii++)
-    addbit(&temp, right_block, DesExpansion[ii]-1, ii);
+      addbit(&right_block, *data, (DesExpansion[ii] + 31), ii);
 
-  //
   // 2. Xor with the key
-  //
-  
-  temp = temp ^ key;
+  right_block = right_block ^ key;
 
-  //
   // 3. Substitution
-  //
-   
-  int block_nbr = 8;
+  int coordx, coordy;
+  uint64_t substitued;
 
-  for(int ii = 0; ii < block_nbr; ii++)
+  for(int ii = 0; ii < 8; ii++)
   {
-    mask1 = 0;
-    mask2 = 0;
+      coordx = ((right_block << 6 * ii) & FIRSTBIT) == FIRSTBIT ? 2 : 0;
+      if( ((right_block << (6 * ii + 5)) & FIRSTBIT) == FIRSTBIT)
+	  coordx++;
+
+      coordy = 0;
+      for(int jj = 1; jj < 5; jj++)
+      {
+	  if( ((right_block << (6 * ii + jj)) & FIRSTBIT) == FIRSTBIT)
+	  {
+	      coordy += 2^(4 - jj);
+	  }
+      }
     
-    addbit(&mask1, temp, 6 * ii, 0);
-    addbit(&mask1, temp, 5 + 6 * ii, 1);
-    mask1 = mask1 >> 62;
-    
-    addbit(&mask2, temp, 1 + 6 * ii, 0);
-    addbit(&mask2, temp, 2 + 6 * ii, 1);
-    addbit(&mask2, temp, 3 + 6 * ii, 2);
-    addbit(&mask2, temp, 4 + 6 * ii, 3);
-    mask2 = mask2 >> 60;
-    
-    mask1 = (uint64_t)DesSbox[ii][mask1][mask2];
-    mask1 = mask1 << (60-(4 * ii));
-    temp_bis = temp_bis | mask1;
+    substitued = DesSbox[ii][coordx][coordy];
+    substitued = substitued << (60 - (4 * ii));
+    right_block_temp += substitued;
   }
   
-  temp = temp_bis;
+  // right_block donen
+  right_block = right_block_temp;
 
-  //
   // 4. Permutation
-  //
-
-  temp_bis = 0;
+  right_block_temp = 0;
   
   for(int ii = 0; ii < 32; ii++)
-    addbit(&temp_bis, temp, Pbox[ii]-1, ii);
+    addbit(&right_block_temp, right_block, Pbox[ii] - 1, ii);
   
-  temp = temp_bis;
+  right_block = right_block_temp;
 
-  //
   // 5. Xor with the left block
-  //
-
-  temp = temp ^ left_block;
+  right_block = right_block ^ *data;
   
   // Combine the new block and the right block
-  temp = temp >> 32;
-  
-  *data = *data << 32;
-  *data = *data | temp;
+  *data = (*data << 32) + (right_block >> 32);
 }
 
 

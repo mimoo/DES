@@ -36,6 +36,17 @@ static void usage(int status)
     }
     exit(status);
 }
+// a supprimer
+void printbits(uint64_t v)
+{
+    for(int ii = 0; ii < 64; ii++)
+    {
+	if( ((v << ii) & FIRSTBIT) == (uint64_t)0)
+	    printf("0");
+	else
+	    printf("1");
+    }
+}
 
 int main(int argc, char ** argv)
 {
@@ -186,8 +197,15 @@ int main(int argc, char ** argv)
 
     while((amount = fread(&data, 1, 8, input)) > 0)
     {
+	if(amount != 8)
+	{
+	    data = data << (8 * (8 - amount));
+	}
+	printf("\n amount = %zd, data = ", amount);
+	printbits(data);
+	
 	// initial permutation
-	Permutation(&data, true);
+	    Permutation(&data, true);
 
 	// encrypt rounds
         if(encrypt)
@@ -200,14 +218,27 @@ int main(int argc, char ** argv)
 	// decrypt rounds
         else
         {
+	    data = (data << 32) + (data >> 32);
+
             for(int ii = 15; ii >= 0; ii--)
             {
                 rounds(&data, a_key[ii]);
             }
+
+	    data = (data << 32) + (data >> 32);
         }
 
 	// final permutation
-	Permutation(&data, false);
+	    Permutation(&data, false);
+
+	    printf("\n\nbeforewriting\n");
+
+	if(amount != 8)
+	{
+	    data = data << (8 * (8 - amount));
+	}
+	printf("\n amount = %zd, data = ", amount);
+	printbits(data);
 
 	// write output
 	fwrite(&data, 1, amount, output);
