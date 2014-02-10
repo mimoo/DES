@@ -42,9 +42,7 @@ int main(int argc, char ** argv)
     // vars
     uint64_t key = 0;
     bool encrypt = true;
-    FILE * input = NULL; //inputFile
-    uint64_t data;
-    uint64_t next_key;
+    FILE * input = NULL;
 
     //////////////////////////////////////////////////////
     //                 OPTION PARSER                   //
@@ -61,7 +59,6 @@ int main(int argc, char ** argv)
 	    {"help",           no_argument, NULL, 'h'},
 	    {"output",   required_argument, NULL, 'o'},
 	    {"key",      required_argument, NULL, 'k'},
-
 	    {NULL,                       0, NULL,   0}
 	}; 
 
@@ -81,8 +78,8 @@ int main(int argc, char ** argv)
 	    output = fopen(optarg, "w");
 	    if(output == NULL)
 	    {
-		// what about: "
-		fprintf(stderr, "Error: don't have permission to write output file");
+		fprintf(stderr,
+			"Error: don't have permission to write output file");
 		exit(EXIT_FAILURE);
 	    }
 	    break;
@@ -124,13 +121,14 @@ int main(int argc, char ** argv)
 	usage(EXIT_FAILURE);
     }
 
-    // Check if there is a input file and if we can open it
+    // Check if there is a input file passed as argument
     if(argv[optind] == NULL)
     {
 	fprintf(stderr, "Error: Missing input file argument\n");
 	usage(EXIT_FAILURE);
     }
 
+    // Check if we can open the input file
     input = fopen(argv[optind], "rb");
 
     if(input == NULL)
@@ -139,10 +137,11 @@ int main(int argc, char ** argv)
 	usage(EXIT_FAILURE);
     }
 
-    // check output file
+    // default output file if none is specified
     if(output == NULL) 
 	output = fopen("output.txt", "w");
 
+    // check if we have write rights
     if(output == NULL)
     {
 	fprintf(stderr, "Error: don't have permission to write output file\n");
@@ -154,7 +153,7 @@ int main(int argc, char ** argv)
     ////////////////////////////////////////////////////
 
     //
-    // 2. Verify parity key
+    // 1. Verify parity bits of the key
     //
     
     if(!key_parity_verify(key))
@@ -164,12 +163,12 @@ int main(int argc, char ** argv)
     }
     
     //
-    // 3. Rounds
+    // 2. Get the 16 subkeys
     //
 
-    // get keys
     uint64_t a_key[16];
     a_key[0] = key;
+    uint64_t next_key;
 
     for(int ii = 0; ii < 16; ii++)
     {
@@ -178,8 +177,12 @@ int main(int argc, char ** argv)
             a_key[ii + 1] = next_key;
     }
 
-    // read input
-    size_t amount; 
+    //
+    // 3. 16 Rounds of enc/decryption
+    //
+
+    size_t amount; // used for fwrite
+    uint64_t data;
 
     while((amount = fread(&data, 1, 8, input)) > 0)
     {
