@@ -294,8 +294,6 @@ void rounds(uint64_t *data, uint64_t key)
   // 3. Substitution
   //
    
-  unsigned char coordx = 0;
-  unsigned char coordy = 0;
   int block_nbr = 8;
 
   for(int ii = 0; ii < block_nbr; ii++)
@@ -313,7 +311,9 @@ void rounds(uint64_t *data, uint64_t key)
     addbit(&mask2, temp, 4 + 6 * ii, 3);
     mask2 = mask2 >> 60;
     
-    temp_bis = temp_bis | (DesSbox[ii][coordy][coordx] << (60-(4 * ii)));
+    mask1 = (uint64_t)DesSbox[ii][mask1][mask2];
+    mask1 = mask1 << (60-(4 * ii));
+    temp_bis = temp_bis | mask1;
   }
   
   temp = temp_bis;
