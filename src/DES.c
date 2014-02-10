@@ -273,9 +273,9 @@ void rounds(uint64_t *data, uint64_t key)
   uint64_t temp_bis = 0;
   
   left_block  = left_block >> 32;
-  right_block = right_block << 32;
-  right_block = right_block >> 32;  
-  
+  left_block  = left_block << 32;
+  right_block = right_block << 32; 
+  printf("data : %u et", *data);
   //
   // 1. Block expansion
   //  
@@ -352,9 +352,12 @@ void rounds(uint64_t *data, uint64_t key)
   //
 
   temp = temp ^ left_block;
+  temp = temp >> 32;
   
   *data = *data << 32;
   *data = *data | temp;
+  
+  printf("et data : %u\n", *data);
 }
 
 
