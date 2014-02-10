@@ -272,10 +272,11 @@ void rounds(uint64_t *data, uint64_t key)
   uint64_t temp = 0;
   uint64_t temp_bis = 0;
   
+  // Split the blocks
   left_block  = left_block >> 32;
   left_block  = left_block << 32;
   right_block = right_block << 32; 
-  printf("data : %u et", *data);
+  
   //
   // 1. Block expansion
   //  
@@ -313,25 +314,6 @@ void rounds(uint64_t *data, uint64_t key)
     mask2 = mask2 >> 60;
     
     temp_bis = temp_bis | (DesSbox[ii][coordy][coordx] << (60-(4 * ii)));
-    
-    /*mask1 = 1 << (5 * ii);
-    mask1 = mask1 & temp;
-    mask1 = mask1 >> (4 * ii);
-    mask2 = mask2 | mask1;
-    mask1 = 1 << ii;
-    mask1 = mask1 & temp;
-    mask1 = mask1 >> ii;
-    mask2 = mask2 | mask1;
-    
-    coordy = mask2;
-    
-    mask1 = 30 << (ii * 6);
-    mask1 = mask1 & temp;
-    mask1 = mask1 >> (1 + (ii * 6));
-    
-    coordx = mask1;
-    
-    temp_bis = temp_bis | (DesSbox[ii][coordy][coordx] << (4 * ii));*/
   }
   
   temp = temp_bis;
@@ -352,12 +334,12 @@ void rounds(uint64_t *data, uint64_t key)
   //
 
   temp = temp ^ left_block;
+  
+  // Combine the new block and the right block
   temp = temp >> 32;
   
   *data = *data << 32;
   *data = *data | temp;
-  
-  printf("et data : %u\n", *data);
 }
 
 
