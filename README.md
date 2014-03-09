@@ -3,9 +3,12 @@ DES
 
 This is an implementation in C of DES (Data Encryption Standard).  
 
-[DES][1] is broken cypher and this work is for education purpose.
+This is to be used only for 64 bits blocks maximum. For longer files, use a [mode of operation][1] on this DES cipher.
 
-[1]: http://en.wikipedia.org/wiki/Data_Encryption_Standard
+[DES][2] is broken cypher and this work is for education purpose.
+
+[1]: http://en.wikipedia.org/wiki/Block_cipher_mode_of_operation
+[2]: http://en.wikipedia.org/wiki/Data_Encryption_Standard
 
 
 Author
