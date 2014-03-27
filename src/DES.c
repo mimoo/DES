@@ -227,10 +227,10 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
 	    if(ii < 28)
 		addbit(&key_left, *key, ii, ii);
 	    else
-		addbit(&key_right, *key, ii, ii);
+		addbit(&key_right, *key, ii, ii % 28);
 	}
     }
-
+   
     // 2. Rotations
     key_left_temp = Rotations[round] == 1 ? FIRSTBIT : 0xC000000000000000;
     key_right_temp = Rotations[round] == 1 ? FIRSTBIT : 0xC000000000000000;
