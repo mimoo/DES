@@ -9,7 +9,11 @@
 //                 GLOBAL VARIABLES                //
 ////////////////////////////////////////////////////
 
+// Tables bellow can be verified on wikipedia:
+// http://en.wikipedia.org/wiki/DES_supplementary_material#Initial_permutation_.28IP.29
+
 // Key schedule tables
+
 const int PC1[56] = {
    57, 49, 41, 33, 25, 17,  9,
     1, 58, 50, 42, 34, 26, 18,
@@ -34,8 +38,9 @@ const int PC2[48] = {
    46, 42, 50, 36, 29, 32
 };
 
-// Permutations 
-const int PermutationInitial[64] = {
+// Permutation tables
+
+const int InitialPermutation[64] = {
     58, 50, 42, 34, 26, 18, 10,  2,
     60, 52, 44, 36, 28, 20, 12,  4,
     62, 54, 46, 38, 30, 22, 14,  6,
@@ -45,7 +50,7 @@ const int PermutationInitial[64] = {
     61, 53, 45, 37, 29, 21, 13,  5,
     63, 55, 47, 39, 31, 23, 15,  7
 };
-const int PermutationFinal[64] = {
+const int FinalPermutation[64] = {
     40,  8, 48, 16, 56, 24, 64, 32,
     39,  7, 47, 15, 55, 23, 63, 31,
     38,  6, 46, 14, 54, 22, 62, 30,
@@ -56,7 +61,8 @@ const int PermutationFinal[64] = {
     33,  1, 41,  9, 49, 17, 57, 25
 };
 
-// Rounds
+// Rounds tables
+
 const int DesExpansion[48] = {
     32,  1,  2,  3,  4,  5,  4,  5,
      6,  7,  8,  9,  8,  9, 10, 11,
@@ -136,10 +142,10 @@ const int Pbox[32] = {
 ////////////////////////////////////////////////////
 
 void addbit(uint64_t *block, uint64_t from,
-		   int position_from, int position_to)
+            int position_from, int position_to)
 {
     if(((from << (position_from)) & FIRSTBIT) != 0)
-	*block += (FIRSTBIT >> position_to);
+        *block += (FIRSTBIT >> position_to);
 }
 
 void Permutation(uint64_t* data, bool initial)
@@ -147,51 +153,50 @@ void Permutation(uint64_t* data, bool initial)
     uint64_t data_temp = 0;
     for(int ii = 0; ii < 64; ii++)
     {
-	if(initial)
-	    addbit(&data_temp, *data, PermutationInitial[ii] - 1, ii);
-	else
-	    addbit(&data_temp, *data, PermutationFinal[ii] - 1, ii);
+        if(initial)
+            addbit(&data_temp, *data, InitialPermutation[ii] - 1, ii);
+        else
+            addbit(&data_temp, *data, FinalPermutation[ii] - 1, ii);
     }
     *data = data_temp;
 }
 
 bool key_parity_verify(uint64_t key)
 {
-    int parity_bit = 0; // parity helper
+    int parity_bit = 0; // Parity helper
 
     for(int ii = 0; ii < 64; ii++)
     {
-	// test the parity bit (8-th bit)
-	if(ii % 8 == 7)
-	{
-	    if(parity_bit == 0)
-	    {
-		// test if 8-th bit != 0
-		if( ((key << ii) & FIRSTBIT) != (uint64_t)0)
-		{
-		    printf("parity error at bit #%i\n", ii + 1);
-		    return false;
-		}
-	    }
-	    else
-	    {
-		// test if 8-th bit != 1
-		if( ((key << ii) & FIRSTBIT) != FIRSTBIT)
-		{
-		    printf("parity error at bit #%i\n", ii + 1);
-		    return false;
-		}
-	    }
-	    parity_bit = 0; // re-init parity_bit for next byte block
-	}
-	// count numbers of 1 in the 7bit block
-	else
-	{
-	    if( ((key << ii) & FIRSTBIT) == FIRSTBIT)
-	    {
-		parity_bit = parity_bit == 0 ? 1 : 0;
-	    }
-	}
+        // Test the parity bit (8-th bit)
+        if(ii % 8 == 7)
+        {
+            if(parity_bit == 0)
+            {
+                // Test if 8-th bit != 0
+                if( ((key << ii) & FIRSTBIT) != (uint64_t)0)
+                {
+                    printf("parity error at bit #%i\n", ii + 1);
+                    return false;
+                }
+            }
+            else
+            {
+                // Test if 8-th bit != 1
+                if( ((key << ii) & FIRSTBIT) != FIRSTBIT)
+                {
+                    printf("parity error at bit #%i\n", ii + 1);
+                    return false;
+                }
+                
+            }
+            parity_bit = 0; // Re-init parity_bit for next byte block
+        }
+        // Count numbers of 1 in the 7bit block
+        else
+        {
+            if( ((key << ii) & FIRSTBIT) == FIRSTBIT)
+                parity_bit = parity_bit == 0 ? 1 : 0;
+        }
     }
 
     return true;
@@ -206,61 +211,58 @@ void key_schedule(uint64_t* key, uint64_t* next_key, int round)
     uint64_t key_left_temp = 0;
     uint64_t key_right_temp = 0;
 
-    *next_key = 0; // important !
+    *next_key = 0; // Important !
 
     // 1. First round => PC-1 : Permuted Choice 1
     if(round == 0)
     {
-	for(int ii = 0; ii < 56; ii++)
-	{
-	    if(ii < 28)
-		addbit(&key_left, *key, PC1[ii] - 1, ii);
-	    else
-		addbit(&key_right, *key, PC1[ii] - 1, ii % 28);
-	}
+        for(int ii = 0; ii < 56; ii++)
+        {
+            if(ii < 28)
+                addbit(&key_left, *key, PC1[ii] - 1, ii);
+            else
+                addbit(&key_right, *key, PC1[ii] - 1, ii % 28);
+        }
     }
-    // 1. Other rounds? => Seperate key into two key halves.
+    // 1'. Other rounds? => Seperate key into two key halves.
     else
     {
-	for(int ii = 0; ii < 56; ii++)
-	{
-	    if(ii < 28)
-		addbit(&key_left, *key, ii, ii);
-	    else
-		addbit(&key_right, *key, ii, ii % 28);
-	}
+        for(int ii = 0; ii < 56; ii++)
+        {
+            if(ii < 28)
+                addbit(&key_left, *key, ii, ii);
+            else
+                addbit(&key_right, *key, ii, ii % 28);
+        }
     }
    
     // 2. Rotations
     key_left_temp = Rotations[round] == 1 ? FIRSTBIT : 0xC000000000000000;
     key_right_temp = Rotations[round] == 1 ? FIRSTBIT : 0xC000000000000000;
-
     key_left_temp = (key_left & key_left_temp) >> (28 - Rotations[round]);
     key_right_temp = (key_right & key_right_temp) >> (28 - Rotations[round]);
 
     key_left_temp += (key_left << Rotations[round]);
     key_right_temp += (key_right << Rotations[round]);
-
+    
     // Combine the 2 keys into 1 (next_key)
-    // next_key will be used for following rounds
+    // Next_key will be used for following rounds
     for(int ii = 0; ii < 56; ii++)
     {
-	if(ii < 28)
-	    addbit(next_key, key_left_temp, ii, ii);
-	else
-	    addbit(next_key, key_right_temp, (ii % 28), ii);
+        if(ii < 28)
+            addbit(next_key, key_left_temp, ii, ii);
+        else
+            addbit(next_key, key_right_temp, (ii % 28), ii);
     }
 
     // 3. PC-2 : Permuted Choice 2
     *key = 0;
 
     for(int ii = 0; ii < 48; ii++)
-    {
-	addbit(key, *next_key, PC2[ii] - 1, ii);
-    }
+        addbit(key, *next_key, PC2[ii] - 1, ii);
 
     // All Good!
-    //pn Use key in the DES rounds.
+    // Use key in the DES rounds.
     // Use next_key in this function again as the new key to change
 }
 
@@ -269,54 +271,53 @@ void rounds(uint64_t *data, uint64_t key)
     uint64_t right_block = 0;
     uint64_t right_block_temp = 0;
   
-  // 1. Block expansion
-  for(int ii = 0; ii < 48; ii++)
-      addbit(&right_block, *data, (DesExpansion[ii] + 31), ii);
+    // 1. Block expansion
+    for(int ii = 0; ii < 48; ii++)
+        addbit(&right_block, *data, (DesExpansion[ii] + 31), ii);
+  
+    // 2. Xor with the key
+    right_block = right_block ^ key;
 
-  // 2. Xor with the key
-  right_block = right_block ^ key;
+    // 3. Substitution
+    int coordx, coordy;
+    uint64_t substitued;
 
-  // 3. Substitution
-  int coordx, coordy;
-  uint64_t substitued;
+    for(int ii = 0; ii < 8; ii++)
+    {
+        coordx = ((right_block << 6 * ii) & FIRSTBIT) == FIRSTBIT ? 2 : 0;
+        if( ((right_block << (6 * ii + 5)) & FIRSTBIT) == FIRSTBIT)
+            coordx++;
 
-  for(int ii = 0; ii < 8; ii++)
-  {
-      coordx = ((right_block << 6 * ii) & FIRSTBIT) == FIRSTBIT ? 2 : 0;
-      if( ((right_block << (6 * ii + 5)) & FIRSTBIT) == FIRSTBIT)
-	  coordx++;
-
-      coordy = 0;
-      for(int jj = 1; jj < 5; jj++)
-      {
-	  if( ((right_block << (6 * ii + jj)) & FIRSTBIT) == FIRSTBIT)
-	  {
-	      coordy += 2^(4 - jj);
-	  }
-      }
+        coordy = 0;
+        for(int jj = 1; jj < 5; jj++)
+        {
+            if( ((right_block << (6 * ii + jj)) & FIRSTBIT) == FIRSTBIT)
+            {
+                coordy += 2^(4 - jj);
+            }
+        }
     
-    substitued = DesSbox[ii][coordx][coordy];
-    substitued = substitued << (60 - (4 * ii));
-    right_block_temp += substitued;
-  }
+        substitued = DesSbox[ii][coordx][coordy];
+        substitued = substitued << (60 - (4 * ii));
+        right_block_temp += substitued;
+    }
   
-  // right_block donen
-  right_block = right_block_temp;
+    // Right_block done
+    right_block = right_block_temp;
 
-  // 4. Permutation
-  right_block_temp = 0;
+    // 4. Permutation
+    right_block_temp = 0;
   
-  for(int ii = 0; ii < 32; ii++)
-    addbit(&right_block_temp, right_block, Pbox[ii] - 1, ii);
+    for(int ii = 0; ii < 32; ii++)
+        addbit(&right_block_temp, right_block, Pbox[ii] - 1, ii);
   
-  right_block = right_block_temp;
+    right_block = right_block_temp;
 
-  // 5. Xor with the left block
-  right_block = right_block ^ *data;
+    // 5. Xor with the left block
+    right_block = right_block ^ *data;
   
-  // Combine the new block and the right block
-  *data = (*data << 32) + (right_block >> 32);
+    // Combine the new block and the right block
+    *data = (*data << 32) + (right_block >> 32);
 }
-
 
 // End of file

@@ -10,7 +10,6 @@ LDFLAGS=-lm
 .PHONY: all clean help genkey
 
 #Rules and targets
-
 all: $(APP)
 
 $(APP): DES.o main.o

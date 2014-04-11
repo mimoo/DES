@@ -4,28 +4,25 @@
 //     - Jacques Monin, jacques.monin@u-bordeaux.fr
 //     - Hugo Bonnin, hugo.bonnin@u-bordeaux.fr
 //
-// Tables bellow can be verified on wikipedia:
-// http://en.wikipedia.org/wiki/DES_supplementary_material#Initial_permutation_.28IP.29
-//
 
 #ifndef DES_H
 #define DES_H
 
-//
-//             USEFUL DEFINES 
-//
+//////////////////////////////////////////////////////
+//               USEFUL DEFINES                    //
+////////////////////////////////////////////////////
 
 #define FIRSTBIT 0x8000000000000000 // 1000000000...
 
-//
-//             PROTOTYPES
-//
+//////////////////////////////////////////////////////
+//                 PROTOTYPES                      //
+////////////////////////////////////////////////////
 
-// addbit helper
-// takes the bit number "position_from" from "from"
+// Addbit helper
+// Takes the bit number "position_from" from "from"
 // adds it to "block" in position "position_to"
 void addbit(uint64_t *block, uint64_t from,
-	    int position_from, int position_to);
+            int position_from, int position_to);
 
 // Initial and Final Permutations
 void Permutation(uint64_t* data, bool initial);

@@ -1,15 +1,14 @@
 DES
 ============
 
-This is an implementation in C of DES (Data Encryption Standard).  
+This is an implementation in C of DES (Data Encryption Standard).
 
 This is to be used only for 64 bits blocks maximum. For longer files, use a [mode of operation][1] on this DES cipher.
 
-[DES][2] is broken cypher and this work is for education purpose.
+[DES][2] is a broken cypher and this work is intended for educational purpose.
 
 [1]: http://en.wikipedia.org/wiki/Block_cipher_mode_of_operation
 [2]: http://en.wikipedia.org/wiki/Data_Encryption_Standard
-
 
 Author
 ------
@@ -25,7 +24,7 @@ Files
 
 * **main.c** builds the algorithm and allows you to encrypt/decrypt an input file.
 
-use make to build desbox.
+Use make to build desbox.
 
     $ make
     
@@ -33,7 +32,7 @@ use make to build desbox.
 
 * **genkey.c** is a key generator that prevents weak keys. Use it if you don't have any key to use.
 
-use make to build the keygen
+Use make to build the keygen.
 
     $ make genkey
 

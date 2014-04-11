@@ -12,76 +12,73 @@ void printbits(uint64_t v)
 {
     for(int ii = 0; ii < 64; ii++)
     {
-	if( ((v << ii) & FIRSTBIT) == (uint64_t)0)
-	    printf("0");
-	else
-	    printf("1");
+        if( ((v << ii) & FIRSTBIT) == (uint64_t)0)
+            printf("0");
+        else
+            printf("1");
     }
 }
 
-// generate a 64bit random DES key
-// adds parity bits (last bit of each byte)
-// check for weak keys using key_schedule of DES.c
+// Generate a 64bit random DES key
+// Add parity bits (last bit of each byte)
+// Check for weak keys using key_schedule of DES.c
 static void genkey(uint64_t* key)
 {
     srand(time(NULL));
 
-    // generate key
+    // Generate key
     int parity_bit = 0;
 
     for(int ii = 0; ii < 64; ii++) 
     {
-	// parity bit
-	if(ii % 8 == 7)
-	{
-	    if(parity_bit == 1)
-	    {
-		*key += (FIRSTBIT >> ii);
-	    }
-	    parity_bit = 0; // re-init parity_bit for next byte block
-	}
-	else
-	{
-	    if(rand() % 2 == 1)
-	    {
-		*key += (FIRSTBIT >> ii);
-		parity_bit = parity_bit == 0 ? 1 : 0;
-	    
-	    }
-	}
+        // Parity bit
+        if(ii % 8 == 7)
+        {
+            if(parity_bit == 1)
+                *key += (FIRSTBIT >> ii);
+            parity_bit = 0; // Re-init parity_bit for next byte block
+        }
+        else
+        {
+            if(rand() % 2 == 1)
+            {
+                *key += (FIRSTBIT >> ii);
+                parity_bit = parity_bit == 0 ? 1 : 0;
+            }
+        }
     }
 
-    // test the key schedule
+    // Test the key schedule
     uint64_t a_key[16];
     a_key[0] = *key;
     uint64_t next_key;
 
     for(int ii = 0; ii < 16; ii++)
     {
-	key_schedule(&a_key[ii], &next_key, ii);
-	if(ii != 15)
-	    a_key[ii + 1] = next_key;
+        key_schedule(&a_key[ii], &next_key, ii);
+        if(ii != 15)
+            a_key[ii + 1] = next_key;
     }
 
-    // test for weak keys
+    // Test for weak keys
     bool weak = false;
 
     for(int ii = 0; ii < 16; ii++)
     {
-	for(int jj = 0; jj < 16; jj++)
-	{
-	    if(jj != ii)
-	    {
-		if(a_key[ii] == a_key[jj])
-		    weak = true;
-	    }
-	}
+        for(int jj = 0; jj < 16; jj++)
+        {
+            if(jj != ii)
+            {
+                if(a_key[ii] == a_key[jj])
+                    weak = true;
+            }
+        }
     }
 
-    // if key is weak, do the algorithm one more time
+    // If the generated key is weak, do the algorithm one more time
     if(weak)
     {
-	genkey(key);
+        genkey(key);
     }
 }
 

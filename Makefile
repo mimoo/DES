@@ -5,7 +5,6 @@ APP=desbox
 .PHONY: all clean help genkey
 
 #Rules and targets
-
 all: $(APP)
 
 $(APP):
