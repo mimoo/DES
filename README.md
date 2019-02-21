@@ -3,6 +3,8 @@ DES
 
 This is an implementation in C of DES (Data Encryption Standard).
 
+**It does not work correctly, see https://github.com/mimoo/DES/issues/6**
+
 This is to be used only for files that are multiples of 64 bits **exactly**. We used ECB as a [mode of operation][1] but haven't implemented any padding system (it is not the point, if you want to add it you can always fork the code!).
 
 [DES][2] is a broken cypher and this work is intended for educational purpose.
